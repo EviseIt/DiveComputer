@@ -1,0 +1,376 @@
+﻿<Window x:Class="Abo.DiveComputer.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Abo.DiveComputer.WPF"
+        xmlns:realWorldPlotter="clr-namespace:RealWorldPlotter"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <realWorldPlotter:TextToDoubleConverter x:Key="textToDouble"/>
+        <system:Double x:Key="EllipseSize">12</system:Double>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="4"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GridSplitter Grid.Row="1" Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="DarkGray"></GridSplitter>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1">
+                <TextBox Text="{Binding ElementName=plot,Path=XMax,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
+                <TextBox Text="{Binding ElementName=plot,Path=YMin,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
+                <Button Name="btnCompute" Click="BtnCompute_OnClick">Calculer</Button>
+                <Button Name="btnComputeTEST" Click="btnComputeTEST_Click">TEST</Button>
+                <TextBox Name="txtMinProf"></TextBox>
+                <TextBox Text="{Binding ElementName=plot,Path=YMin,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
+
+<Viewbox Name="wait" Visibility="Hidden">
+                    <Grid Width="120" Height="120">
+                        <!-- Cercle de fond -->
+                        <Ellipse Stroke="#D0D0D0" StrokeThickness="8" />
+
+                        <!-- Arc animé -->
+                        <Path Stroke="#3B82F6" StrokeThickness="8" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                            <Path.Data>
+                                <!-- Arc ~90° -->
+                                <PathGeometry>
+                                    <PathFigure StartPoint="60,12" IsClosed="False">
+                                        <ArcSegment Point="108,60" Size="48,48" SweepDirection="Clockwise"
+                                            IsLargeArc="False"/>
+                                    </PathFigure>
+                                </PathGeometry>
+                            </Path.Data>
+                            <Path.RenderTransform>
+                                <RotateTransform x:Name="spinnerRotate" CenterX="60" CenterY="60"/>
+                            </Path.RenderTransform>
+                        </Path>
+
+                        <!-- Animation -->
+                        <Grid.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <!-- Rotation continue -->
+                                        <DoubleAnimation Storyboard.TargetName="spinnerRotate"
+                                                 Storyboard.TargetProperty="Angle"
+                                                 From="0" To="360" Duration="0:0:1.2"
+                                                 RepeatBehavior="Forever"/>
+                                        <!-- Optionnel: effet “respiration” de l’arc -->
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                 From="0.6" To="1.0" AutoReverse="True"
+                                                 Duration="0:0:0.6" RepeatBehavior="Forever"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Grid.Triggers>
+                    </Grid>
+                </Viewbox>
+            </StackPanel>
+            <realWorldPlotter:RealWorldPlot Grid.Column="0" Grid.Row="0" x:Name="plot"  BoundTriming="True" CanMovePoints="True"></realWorldPlotter:RealWorldPlot>
+        </Grid>
+        <Grid Grid.Row="2">
+            <TabControl>
+              
+                <TabItem Header="Buhlmann">
+                    <TabControl>
+                        <TabItem Name="T0">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC0MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC0Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T1">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC1MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC1Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T1b">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC1bMValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC1bTn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T2">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC2MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC2Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T3">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC3MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC3Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T4">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC4MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC4Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T5">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC5MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC5Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T6">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC6MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC6Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T7">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC7MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC7Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T8">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC8MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC8Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T9">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC9MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC9Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T10">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC10MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC10Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T11">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC11MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC11Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T12">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC12MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC12Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T13">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC13MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC13Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T14">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC14MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC14Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Name="T15">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center"/>
+                                    <Ellipse Width="{StaticResource EllipseSize}" Height="{StaticResource EllipseSize}" Fill="{Binding Path=Brush}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="0" x:Name="plotC15MValues"/>
+                                <realWorldPlotter:RealWorldPlot Grid.Row="1" x:Name="plotC15Tn2"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>NDL</TabItem.Header>
+                            <Grid>
+                                <realWorldPlotter:RealWorldPlot  x:Name="NDL"/>
+                            </Grid>
+                        </TabItem>
+                        <TabItem>
+                            <TabItem.Header>ALL</TabItem.Header>
+                            <Grid>
+                                <realWorldPlotter:RealWorldPlot  x:Name="All"/>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </TabItem>
+                <TabItem Header="MN90">
+
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</Window>
