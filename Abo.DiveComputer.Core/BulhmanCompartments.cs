@@ -1,9 +1,10 @@
 using System.Collections;
 using RealWorldPlot.Interfaces;
+using RealWorldPlot.Interfaces.GeometryHelpers;
 
 namespace Abo.DiveComputer.Core;
 
-public class Compartments : IEnumerable<Compartment>
+public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
 {
 
     internal const double ln2 = 0.6931471805599453;
@@ -16,7 +17,7 @@ public class Compartments : IEnumerable<Compartment>
         get
         {
             double retValue;
-            if (Compartments.DEBUG)
+            if (BulhmanCompartments.DEBUG)
             {
                 retValue = 1.0;
             }
@@ -38,30 +39,30 @@ public class Compartments : IEnumerable<Compartment>
     }
 
 
-    private readonly Compartment[] _compartments;
-    public Compartments(Diver diver)
+    private readonly BulhmanCompartment[] _compartments;
+    public BulhmanCompartments(Diver diver)
     {
         this.Diver = diver;
-        _compartments = new Compartment[]
+        _compartments = new BulhmanCompartment[]
         {
 
-            new Compartment(4,1.9082,1.2599),
-            new Compartment(5,1.7928,1.1696),
-            new Compartment(8,1.5352,1),
-            new Compartment(12.5,1.3847,0.8618),
-            new Compartment(18.5,1.278,0.7562),
-            new Compartment(27,1.2306,0.62),
-            new Compartment(38.3,1.1857,0.5043),
-            new Compartment(54.3,1.1504,0.441),
-            new Compartment(77,1.1223,0.375),
-            new Compartment(109,1.0999,0.35),
-            new Compartment(146,1.0844,0.3295),
-            new Compartment(187,1.0731,0.3065),
-            new Compartment(239,1.0635,0.2835),
-            new Compartment(305,1.0552,0.285),
-            new Compartment(390,1.0478,0.261),
-            new Compartment(498,1.0414,0.248),
-            new Compartment(635,1.0359,0.2327),
+            new BulhmanCompartment(4,1.9082,1.2599),
+            new BulhmanCompartment(5,1.7928,1.1696),
+            new BulhmanCompartment(8,1.5352,1),
+            new BulhmanCompartment(12.5,1.3847,0.8618),
+            new BulhmanCompartment(18.5,1.278,0.7562),
+            new BulhmanCompartment(27,1.2306,0.62),
+            new BulhmanCompartment(38.3,1.1857,0.5043),
+            new BulhmanCompartment(54.3,1.1504,0.441),
+            new BulhmanCompartment(77,1.1223,0.375),
+            new BulhmanCompartment(109,1.0999,0.35),
+            new BulhmanCompartment(146,1.0844,0.3295),
+            new BulhmanCompartment(187,1.0731,0.3065),
+            new BulhmanCompartment(239,1.0635,0.2835),
+            new BulhmanCompartment(305,1.0552,0.285),
+            new BulhmanCompartment(390,1.0478,0.261),
+            new BulhmanCompartment(498,1.0414,0.248),
+            new BulhmanCompartment(635,1.0359,0.2327),
 
 
         };
@@ -75,16 +76,16 @@ public class Compartments : IEnumerable<Compartment>
     /// <summary>
     /// Tensions par compartiment
     /// </summary>
-    private readonly Dictionary<Compartment, RealWorldPoints> _tensionByCompartment = new();
+    private readonly Dictionary<BulhmanCompartment, RealWorldPoints> _tensionByCompartment = new();
     /// <summary>
     /// Donnnées de la courbe de plongée sur le graph des M-values pour un compartiment donné.
     /// </summary>
-    private readonly Dictionary<Compartment, RealWorldPoints> _mValueDataByCompartment = new();
+    private readonly Dictionary<BulhmanCompartment, RealWorldPoints> _tensionByAmbiantPressureByCompartment = new();
     public RealWorldPoints Ndl = new();
     public static bool DEBUG = false;
-    public Compartment this[int index] => _compartments[index];
+    public BulhmanCompartment this[int index] => _compartments[index];
 
-    public RealWorldPoints GetTensions(Compartment compartment)
+    public RealWorldPoints GetTensions(BulhmanCompartment compartment)
     {
         return _tensionByCompartment[compartment];
     }
@@ -93,9 +94,9 @@ public class Compartments : IEnumerable<Compartment>
     /// </summary>
     /// <param name="compartment"></param>
     /// <returns></returns>
-    public RealWorldPoints GetMValuesData(Compartment compartment)
+    public RealWorldPoints GetMValuesData(BulhmanCompartment compartment)
     {
-        return _mValueDataByCompartment[compartment];
+        return _tensionByAmbiantPressureByCompartment[compartment];
     }
     private DirectorCompartment _moveTo(Guid diveProfilePointId, double timeEllapsedInMinutes, double depth)
     {
@@ -110,12 +111,12 @@ public class Compartments : IEnumerable<Compartment>
 
         foreach (var compartment in compartments)
         {
-            CompartmentValue compartmentValue = compartment.MoveTo(diveProfilePointId, 60 * timeEllapsedInMinutes, depth);
+            BulhmanCompartmentValue compartmentValue = compartment.MoveTo(diveProfilePointId, 60 * timeEllapsedInMinutes, depth);
             double n2Tension = compartmentValue.TensionN2;
-            double ambPressure = (Math.Abs(depth) / 10.0) + Compartments.PSurfaceBar;
+            double ambPressure = (Math.Abs(depth) / 10.0) + BulhmanCompartments.PSurfaceBar;
 
             DateTime start0 = DateTime.Now;
-
+            //Ajouter les points de tension dans le graphe par compartiment
             if (!_tensionByCompartment.TryGetValue(compartment, out RealWorldPoints? compartmentData))
             {
                 compartmentData = new RealWorldPoints();
@@ -126,12 +127,35 @@ public class Compartments : IEnumerable<Compartment>
 
             director.ComputeDirector(compartment, n2Tension, compartmentValue.Ndl);
 
-            if (!_mValueDataByCompartment.TryGetValue(compartment, out RealWorldPoints? mValueData))
+            //Ajouter les points de la courbe de plongée sur le graph des M-values pour un compartiment donné.
+            if (!_tensionByAmbiantPressureByCompartment.TryGetValue(compartment, out RealWorldPoints? tensionByAmbiantPressureByCompartmentData))
             {
-                mValueData = new RealWorldPoints();
-                _mValueDataByCompartment.Add(compartment, mValueData);
+                tensionByAmbiantPressureByCompartmentData = new RealWorldPoints();
+                _tensionByAmbiantPressureByCompartment.Add(compartment, tensionByAmbiantPressureByCompartmentData);
             }
-            mValueData.AddNewPoint(ambPressure, n2Tension);
+            tensionByAmbiantPressureByCompartmentData.AddNewPoint(ambPressure, n2Tension);
+
+
+            IndexedSegment? segment = tensionByAmbiantPressureByCompartmentData.GetLastTwoPoints();
+            //si intersection avec Gradientfactpr=>plafond
+            if (segment != null)
+            {
+                //remplacer le temps par la pression ambiante
+                if (compartment._halfLife == 12.5)
+                {
+
+                }
+                IntersectionResult intersectionResult = EuclidianComputer.FindIntersection(compartment.GradientFactorLine.Low, compartment.GradientFactorLine.High, segment.PointA, segment.PointB);
+                if (intersectionResult.Intersects && intersectionResult.Point.X > 1)
+                {
+                    var inter = intersectionResult.Point;
+                    if ((StopPoint == null || StopPoint.X < inter.X))/// && segment.Contains(inter))
+                    {
+                        StopPoint = inter;
+                    }
+                }
+            }
+
             //var elapsed0 = DateTime.Now - start0;
             //==> System.Diagnostics.Debug.WriteLine($"Inner: {elapsed0.TotalMilliseconds}");
         }
@@ -141,9 +165,9 @@ public class Compartments : IEnumerable<Compartment>
         return director;
     }
 
-    public IEnumerator<Compartment> GetEnumerator()
+    public IEnumerator<BulhmanCompartment> GetEnumerator()
     {
-        return ((IEnumerable<Compartment>)_compartments).GetEnumerator();
+        return ((IEnumerable<BulhmanCompartment>)_compartments).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -154,7 +178,7 @@ public class Compartments : IEnumerable<Compartment>
     public void Reset()
     {
         _tensionByCompartment.Clear();
-        _mValueDataByCompartment.Clear();
+        _tensionByAmbiantPressureByCompartment.Clear();
         Ndl = new();
         foreach (var compartment in this)
         {

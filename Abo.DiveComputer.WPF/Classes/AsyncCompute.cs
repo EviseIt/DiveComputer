@@ -12,7 +12,7 @@ namespace Abo.DiveComputer.WPF.Classes
     {
         private readonly Thread _thread;
         private RealWorldPoints _diveProfile;
-        private Compartments _compartments;
+        private BulhmanCompartments _compartments;
         public event EventHandler OnComputationDone;
         
 
@@ -27,7 +27,7 @@ namespace Abo.DiveComputer.WPF.Classes
             OnComputationDone.Invoke(this,new EventArgs());
         }
 
-        public void Compute(RealWorldPoints diveProfile, Compartments compartments)
+        public void Compute(RealWorldPoints diveProfile, BulhmanCompartments compartments)
         {
             _diveProfile=diveProfile;
             _compartments = compartments;

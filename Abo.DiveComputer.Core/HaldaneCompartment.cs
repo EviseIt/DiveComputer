@@ -31,7 +31,7 @@ public class HaldaneCompartment
             return true;
         if (obj.GetType() != this.GetType())
             return false;
-        return Equals((Compartment)obj);
+        return Equals((BulhmanCompartment)obj);
     }
 
     public override int GetHashCode()

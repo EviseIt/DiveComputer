@@ -63,7 +63,7 @@ namespace Abo.DiveComputer.Core
 
 
 
-    public sealed class Compartment
+    public sealed class BulhmanCompartment
     {
 
 
@@ -78,7 +78,7 @@ namespace Abo.DiveComputer.Core
         private double K;   // ln2/halfperiodMin
         public MValues MValues { get; }
 
-        public Compartment(double halfTimeMin, double aBulhmanCoeff, double bBulhmanCoeff)
+        public BulhmanCompartment(double halfTimeMin, double aBulhmanCoeff, double bBulhmanCoeff)
         {
             _halfLife = halfTimeMin;
             Depth = 0;
@@ -86,7 +86,7 @@ namespace Abo.DiveComputer.Core
             this.Name = $"{_halfLife} mn";
             ABulhmanCoeff = aBulhmanCoeff;
             BBulhmanCoeff = bBulhmanCoeff;
-            K = Compartments.ln2 / _halfLife;
+            K = BulhmanCompartments.ln2 / _halfLife;
 
             this.MValues = new MValues(ABulhmanCoeff, BBulhmanCoeff);
             SetGradientFactors(85,85);
@@ -107,7 +107,7 @@ namespace Abo.DiveComputer.Core
 
         public double ABulhmanCoeff { get; }
 
-        protected bool Equals(Compartment other)
+        protected bool Equals(BulhmanCompartment other)
         {
             return _halfLife == other._halfLife;
         }
@@ -120,7 +120,7 @@ namespace Abo.DiveComputer.Core
                 return true;
             if (obj.GetType() != this.GetType())
                 return false;
-            return Equals((Compartment)obj);
+            return Equals((BulhmanCompartment)obj);
         }
 
         public override int GetHashCode()
@@ -133,7 +133,7 @@ namespace Abo.DiveComputer.Core
         /// Fait évoluer le compartiment pendant 'elapsedTimeInSeconds' s en allant
         /// linéairement de la profondeur actuelle vers 'profondeur'. Renvoie la tension finale (bar).
         /// </summary>
-        public CompartmentValue MoveTo(Guid diveProfilePointId, double elapsedTimeInSeconds, double profondeur)
+        public BulhmanCompartmentValue MoveTo(Guid diveProfilePointId, double elapsedTimeInSeconds, double profondeur)
         {
             var start = DateTime.Now;
             double elapsedTimeInSecondsStep = elapsedTimeInSeconds - _latestElapsedTime;
@@ -144,7 +144,7 @@ namespace Abo.DiveComputer.Core
             if (elapsedTimeInSecondsStep <= 0)
             {
                 Depth = profondeur;
-                return new CompartmentValue(PN2Tissue, double.PositiveInfinity, GradientFactor.AffineLine.GetY(Compartments.PSurfaceBar).Y);
+                return new BulhmanCompartmentValue(PN2Tissue, double.PositiveInfinity, GradientFactor.AffineLine.GetY(BulhmanCompartments.PSurfaceBar).Y);
             }
 
             double deltaT = elapsedTimeInSecondsStep / 60.0;
@@ -224,7 +224,7 @@ namespace Abo.DiveComputer.Core
             GradientFactorPoints.AddNewPoint(new RealWorldPoint(elapsedTimeInSeconds / 60, GradientFactor.AffineLine.GetY(Pamb(Depth)).Y), diveProfilePointId);
 
 
-            return new CompartmentValue(PN2Tissue, ndl, GradientFactor.AffineLine.GetY(Pamb(Depth)).Y);
+            return new BulhmanCompartmentValue(PN2Tissue, ndl, GradientFactor.AffineLine.GetY(Pamb(Depth)).Y);
         }
         // k = ln(2)/tau ; inverse fermée (branche principale W0)
         // t = B/R + (1/k) * W( -(k*A/R) * exp(-k*B/R) )
@@ -258,17 +258,17 @@ namespace Abo.DiveComputer.Core
         public RealWorldPoints N2TensionPoints { get; } = new();
         public RealWorldPoints GradientFactorPoints { get; } = new();
         // Utilitaires physiques
-        public static double Pamb(double depthM) => Compartments.PSurfaceBar + depthM / 10.0;              // bar
+        public static double Pamb(double depthM) => BulhmanCompartments.PSurfaceBar + depthM / 10.0;              // bar
         public double PinspN2(double pamb)
         {
             double retValue;
-            if (Compartments.DEBUG)
+            if (BulhmanCompartments.DEBUG)
             {
                 retValue = 0.8 * pamb;
             }
             else
             {
-                retValue = Compartments.FN2 * (pamb - Compartments.PH2O);
+                retValue = BulhmanCompartments.FN2 * (pamb - BulhmanCompartments.PH2O);
             }
 
             return retValue;
@@ -297,9 +297,9 @@ namespace Abo.DiveComputer.Core
 
             // Pressions
             double Pamb0 = pSurfaceBar + depthMeters / 10.0; // ~1 bar / 10 m
-            double Pi0 = fInert * (Pamb0 - Compartments.PH2O);       // inspirée au fond
+            double Pi0 = fInert * (Pamb0 - BulhmanCompartments.PH2O);       // inspirée au fond
             double P0 = tissueStartAtSurfaceOverride ??
-                           fInert * (pSurfaceBar - Compartments.PH2O); // tissu au départ (équilibre surface)
+                           fInert * (pSurfaceBar - BulhmanCompartments.PH2O); // tissu au départ (équilibre surface)
 
             // Cinétique
             double lambda = Math.Log(2.0) / _halfLife; // min^-1
@@ -350,27 +350,5 @@ namespace Abo.DiveComputer.Core
             this.GradientFactor = new GradientFactor(MValues.AffineLine, N2AmbiantPressure.GetInstance().AffineLine, high, low);
             GradientFactor.SolveForX(1, 7);
         }
-    }
-    /// <summary>
-    /// Compratiment value with tension and NDL
-    /// </summary>
-    public class CompartmentValue
-    {
-        public CompartmentValue(double tension, double ndl, double gfMaxN2Tissue)
-        {
-            this.TensionN2 = tension;
-            this.Ndl = ndl;
-            this.GfMaxN2Tissue = gfMaxN2Tissue;
-        }
-        /// <summary>
-        /// Tension maximale N2 tissulaire pour le gradient factor en bar
-        /// </summary>
-        public double GfMaxN2Tissue { get; }
-
-        public double Ndl { get; }
-        /// <summary>
-        /// Tension en N2 des tissus en bar
-        /// </summary>
-        public double TensionN2 { get; }
     }
 }

@@ -5,14 +5,14 @@ namespace Abo.DiveComputer.Core;
 public class Diver
 {
     private bool _initialized;
-    public Compartments Compartments { get; }
+    public BulhmanCompartments Compartments { get; }
     public Tank Tank { get; }
     public Computer Computer { get; }
     public Diver()
     {
         Tank= new Tank(this);
         Computer= new Computer(this);
-        Compartments=new Compartments(this);
+        Compartments=new BulhmanCompartments(this);
     }
     public void Initialize(double surfaceAirConsuptionLPerMn,double tankCapacityL, double startPressureBar)
     {

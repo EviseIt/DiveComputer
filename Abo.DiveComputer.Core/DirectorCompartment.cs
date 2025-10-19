@@ -9,7 +9,7 @@ namespace Abo.DiveComputer.Core
     public class DirectorCompartment
     {
         public double MaxN2Tension { get; private set; }
-        public Compartment Compartment { get; private set; }
+        public BulhmanCompartment Compartment { get; private set; }
 
         static DirectorCompartment()
         {
@@ -18,7 +18,7 @@ namespace Abo.DiveComputer.Core
 
         public static DirectorCompartment None { get; }
 
-        public void ComputeDirector(Compartment compartment, double n2Tension,double ndl)
+        public void ComputeDirector(BulhmanCompartment compartment, double n2Tension,double ndl)
         {
             if (n2Tension > MaxN2Tension)
             {

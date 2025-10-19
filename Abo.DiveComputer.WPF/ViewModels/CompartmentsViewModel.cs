@@ -12,9 +12,9 @@ namespace Abo.DiveComputer.WPF.ViewModels
 {
     public class CompartmentsViewModel
     {
-        private readonly Dictionary<Compartment, CompartmentViewModel> _viewModelsByCompartment = new();
+        private readonly Dictionary<BulhmanCompartment, CompartmentViewModel> _viewModelsByCompartment = new();
 
-        public CompartmentsViewModel(Compartments compartments)
+        public CompartmentsViewModel(BulhmanCompartments compartments)
         {
             SolidColorBrush[] brushes = PaletteGenerator.GenerateDistinct(compartments.Count());
             int i = 0;
@@ -25,7 +25,7 @@ namespace Abo.DiveComputer.WPF.ViewModels
             }
         }
 
-        public CompartmentViewModel this[Compartment compartment]
+        public CompartmentViewModel this[BulhmanCompartment compartment]
         {
             get=> _viewModelsByCompartment [compartment];
         }

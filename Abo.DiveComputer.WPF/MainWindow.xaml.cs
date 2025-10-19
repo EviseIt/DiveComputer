@@ -24,13 +24,13 @@ namespace Abo.DiveComputer.WPF
     public partial class MainWindow : Window
     {
         private readonly SetPointsHelper _setPointsHelper;
-        private readonly Compartments _compartments;
+        private readonly BulhmanCompartments _compartments;
         private RealWorldPoints _currentDiveProfile;
         private CompartmentsViewModel _compartmentsViewModel;
 
         public MainWindow()
         {
-            Compartments.DEBUG = true;
+            BulhmanCompartments.DEBUG = true;
             Diver diver = new Diver();
             InitializeComponent();
             _compartments = diver.Compartments;

@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using RealWorldPlot.Interfaces;
-using Color = System.Windows.Media.Color;
 
 namespace RealWorldPlotter;
 
@@ -205,36 +203,4 @@ public partial class RealWorldPlot : Canvas,INotifyPropertyChanged
    
 
    
-}
-
-public class BrushInfo
-{
-    public BrushInfo(Color color, double opacity = 1.0)
-    {
-        Color = color;
-        Opacity = opacity;
-    }
-
-    public Brush ToBrush()
-    {
-        return new SolidColorBrush(Color) { Opacity = Opacity };
-    }
-
-    public Color Color { get; set; }
-    public double Opacity { get; set; } = 1.0;
-}
-public class PenInfo(Color color, double width, double[] dashPattern=null)
-{
-    public Pen ToPen()
-    {
-        var pen = new Pen(new SolidColorBrush(Color), Width);
-        if (dashPattern != null)
-        {
-            pen.DashStyle = new DashStyle(dashPattern, 0);
-        }
-        return pen;
-    }
-    public double Width { get; set; } = width;
-    public Color Color { get; set; }= color;
-
 }

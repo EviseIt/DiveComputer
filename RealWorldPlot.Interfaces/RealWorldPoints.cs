@@ -149,6 +149,17 @@ public class RealWorldPoints
         get { return _points.Count > 1; }
     }
 
+    public IndexedSegment GetLastTwoPoints()
+    {
+        IndexedSegment? segment = null;
+        if (HasAtLeastTwoPoint)
+        {
+            segment = new IndexedSegment(_lastPoint.PreviousPoint, _lastPoint);
+        }
+        return segment;
+    }
+
+
     /// <summary>
     /// Enumérer les points du monde réel deux par deux en appelant la fonction de rappel pour chaque point.
     /// </summary>
@@ -401,15 +412,5 @@ public class RealWorldPoints
                 lastPoint.X = xMax;
             }
         }
-    }
-}
-
-public struct PointD(double x, double y)
-{
-    public double X { get; } = x;
-    public double Y { get; } = y;
-    public override string ToString()
-    {
-        return $"({X}, {Y})";
     }
 }

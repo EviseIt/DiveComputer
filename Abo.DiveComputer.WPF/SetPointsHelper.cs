@@ -20,13 +20,13 @@ namespace Abo.DiveComputer.WPF
             _penInfo = penInfo;
             _compartmentsViewModel = compartmentsViewModel;
         }
-        private readonly Dictionary<Compartment, RealWorldPlotter.RealWorldPlot> _plotsTn2ByCompartment = new();
+        private readonly Dictionary<BulhmanCompartment, RealWorldPlotter.RealWorldPlot> _plotsTn2ByCompartment = new();
 
-        private readonly Dictionary<Compartment, RealWorldPlotter.RealWorldPlot> _plotsMValueDataByCompartment = new();
+        private readonly Dictionary<BulhmanCompartment, RealWorldPlotter.RealWorldPlot> _plotsMValueDataByCompartment = new();
         private readonly PenInfo _penInfo;
         private readonly CompartmentsViewModel _compartmentsViewModel;
 
-        public void Register(TabItem tabItem, RealWorldPlotter.RealWorldPlot plotTn2, RealWorldPlotter.RealWorldPlot plotMValues, Compartment compartment)
+        public void Register(TabItem tabItem, RealWorldPlotter.RealWorldPlot plotTn2, RealWorldPlotter.RealWorldPlot plotMValues, BulhmanCompartment compartment)
         {
             tabItem.DataContext = _compartmentsViewModel[compartment];
 
@@ -55,7 +55,7 @@ namespace Abo.DiveComputer.WPF
 
         }
 
-        public void SetPoints(Compartments compartments)
+        public void SetPoints(BulhmanCompartments compartments)
         {
             var start = DateTime.Now;
             foreach (var compartment in compartments)

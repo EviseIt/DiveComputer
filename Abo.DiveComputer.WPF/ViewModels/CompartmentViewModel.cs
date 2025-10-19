@@ -5,7 +5,7 @@ namespace Abo.DiveComputer.WPF.ViewModels;
 
 public class CompartmentViewModel
 {
-    public CompartmentViewModel(Compartment compartment, SolidColorBrush solidColorBrush)
+    public CompartmentViewModel(BulhmanCompartment compartment, SolidColorBrush solidColorBrush)
     {
         this.Compartment = compartment;
         this.Brush = solidColorBrush;
@@ -20,5 +20,5 @@ public class CompartmentViewModel
 
     public SolidColorBrush Brush { get; }
 
-    public Compartment Compartment { get; }
+    public BulhmanCompartment Compartment { get; }
 }

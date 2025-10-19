@@ -15,13 +15,3 @@ public class InsertPointRequestEventArgs : EventArgs
 
     public IndexedRealWorldPoint AfterPoint { get;  }
 }
-
-public class PointSelectedEventArgs:EventArgs
-{
-    public PointSelectedEventArgs(IndexedRealWorldPoint selectedPoint)
-    {
-        SelectedPoint = selectedPoint;
-    }
-
-    public IndexedRealWorldPoint SelectedPoint { get; }
-}
