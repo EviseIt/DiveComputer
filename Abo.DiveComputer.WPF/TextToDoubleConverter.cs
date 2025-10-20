@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace RealWorldPlotter;
@@ -26,7 +27,22 @@ public class TextToDoubleConverter : IValueConverter
     }
 }
 
+public class NitroxToVisibilityConverter : IValueConverter
+{
+    // Conversion de double vers string (vue)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is int d && d > 21)
+            return Visibility.Collapsed;
+        return Visibility.Visible;
+    }
 
+    // Conversion de string vers double (modèle)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
 public class TextToPercentageConverter : IValueConverter
 {
     // Conversion de double vers string (vue)

@@ -9,7 +9,7 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
 
     internal const double ln2 = 0.6931471805599453;
     // Paramètres physiologiques
-    internal static double FN2 { get; } = 0.79;     // fraction N2 inspirée (air=0.79)
+  //  internal static double FN2 { get; } = 0.79;     // fraction N2 inspirée (air=0.79)
     internal static double PH2O { get; } = 0.0627;  // bar (vapeur d'eau alvéolaire)
 
     internal static double PSurfaceBar
@@ -36,6 +36,11 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         set;
     } = GradientFactorsSettings.Default;
 
+    public GasSettings GasSettings
+    {
+        get;
+        set;
+    } = GasSettings.Air;
 
     private readonly BulhmanCompartment[] _compartments;
     public BulhmanCompartments(Diver diver)
@@ -44,23 +49,23 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         _compartments = new BulhmanCompartment[]
         {
 
-            new BulhmanCompartment(4,1.9082,1.2599),
-            new BulhmanCompartment(5,1.7928,1.1696),
-            new BulhmanCompartment(8,1.5352,1),
-            new BulhmanCompartment(12.5,1.3847,0.8618),
-            new BulhmanCompartment(18.5,1.278,0.7562),
-            new BulhmanCompartment(27,1.2306,0.62),
-            new BulhmanCompartment(38.3,1.1857,0.5043),
-            new BulhmanCompartment(54.3,1.1504,0.441),
-            new BulhmanCompartment(77,1.1223,0.375),
-            new BulhmanCompartment(109,1.0999,0.35),
-            new BulhmanCompartment(146,1.0844,0.3295),
-            new BulhmanCompartment(187,1.0731,0.3065),
-            new BulhmanCompartment(239,1.0635,0.2835),
-            new BulhmanCompartment(305,1.0552,0.285),
-            new BulhmanCompartment(390,1.0478,0.261),
-            new BulhmanCompartment(498,1.0414,0.248),
-            new BulhmanCompartment(635,1.0359,0.2327),
+            new BulhmanCompartment(this,4,1.9082,1.2599),
+            new BulhmanCompartment(this,5,1.7928,1.1696),
+            new BulhmanCompartment(this,8,1.5352,1),
+            new BulhmanCompartment(this,12.5,1.3847,0.8618),
+            new BulhmanCompartment(this,18.5,1.278,0.7562),
+            new BulhmanCompartment(this,27,1.2306,0.62),
+            new BulhmanCompartment(this,38.3,1.1857,0.5043),
+            new BulhmanCompartment(this,54.3,1.1504,0.441),
+            new BulhmanCompartment(this,77,1.1223,0.375),
+            new BulhmanCompartment(this,109,1.0999,0.35),
+            new BulhmanCompartment(this,146,1.0844,0.3295),
+            new BulhmanCompartment(this,187,1.0731,0.3065),
+            new BulhmanCompartment(this,239,1.0635,0.2835),
+            new BulhmanCompartment(this,305,1.0552,0.285),
+            new BulhmanCompartment(this,390,1.0478,0.261),
+            new BulhmanCompartment(this,498,1.0414,0.248),
+            new BulhmanCompartment(this,635,1.0359,0.2327),
 
 
         };
@@ -155,8 +160,8 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
                         {
                             StopPoint = new StopPoint();
                         }
-                        StopPoint.AssignFrom(inter,compartment);
-                        
+                        StopPoint.AssignFrom(inter, compartment);
+
                     }
                 }
             }
@@ -203,7 +208,7 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
     /// <param name="diveProfile"></param>
     public void ComputeDiveProfile(DiveProfile diveProfile)
     {
-        this.DiveProfile=diveProfile;
+        this.DiveProfile = diveProfile;
         double maxMn = diveProfile.MaxWorldX;
         double maxAmbientPressure = (Math.Abs(diveProfile.MinWorldY) / 10.0) + BulhmanCompartments.PSurfaceBar;
 
@@ -213,7 +218,7 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         Reset();
         foreach (var compartment in _compartments)
         {
-            compartment.SetComputationParameters(GradientFactorsSettings,diveProfile);
+            compartment.SetComputationParameters(GradientFactorsSettings, diveProfile);
         }
 
 
@@ -247,4 +252,5 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
     }
 
     public RealWorldPoints DiveProfile { get; private set; }
+
 }

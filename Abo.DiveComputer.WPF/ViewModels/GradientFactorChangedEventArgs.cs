@@ -10,3 +10,12 @@ public class GradientFactorChangedEventArgs : EventArgs
         High = high;
     }
 }
+
+public class GasSettingsChangedEventArgs : EventArgs
+{
+    public int O2Percentage { get; }
+    public GasSettingsChangedEventArgs(int o2Percentage)
+    {
+        O2Percentage = o2Percentage;
+    }
+}

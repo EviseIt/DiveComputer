@@ -15,7 +15,8 @@
 
         <system:Double x:Key="EllipseSize">12</system:Double>
         <viewModels:GradientFactorViewModel x:Key="GradientFactorViewModel"></viewModels:GradientFactorViewModel>
-
+        <viewModels:GasSettingsViewModel x:Key="GasSettingsViewModel"></viewModels:GasSettingsViewModel>
+        <realWorldPlotter:NitroxToVisibilityConverter x:Key="nitroxToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -33,12 +34,17 @@
                 <TextBox Text="{Binding ElementName=plot,Path=XMax,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
                 <TextBox Text="{Binding ElementName=plot,Path=YMin,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
                 <Button Name="btnCompute" Click="BtnCompute_OnClick">Calculer</Button>
-                <StackPanel Height="50"></StackPanel>
+                <StackPanel Height="40"></StackPanel>
                 <TextBlock Text="GF Bas"></TextBlock>
                 <TextBox Text="{Binding Source={StaticResource GradientFactorViewModel},Path=Low,Converter={StaticResource textToPercentageConverter},Mode=TwoWay}"></TextBox>
                 <TextBlock Text="GF Haut"></TextBlock>
                 <TextBox Text="{Binding Source={StaticResource GradientFactorViewModel},Path=High,Converter={StaticResource textToPercentageConverter},Mode=TwoWay}"></TextBox>
-
+                <StackPanel Height="40"></StackPanel>
+                <TextBlock Text="%0xygène"></TextBlock>
+                <TextBox Text="{Binding Source={StaticResource GasSettingsViewModel},Path=O2Percentage,Converter={StaticResource textToPercentageConverter},Mode=TwoWay}"></TextBox>
+                <StackPanel Visibility="{Binding Source={StaticResource GasSettingsViewModel},Path=O2Percentage,Converter={StaticResource nitroxToVisibilityConverter},Mode=TwoWay}">
+                    <Image Source=""></Image>
+                </StackPanel>
 
                 <Viewbox Name="wait" Visibility="Hidden">
                     <Grid Width="120" Height="120">

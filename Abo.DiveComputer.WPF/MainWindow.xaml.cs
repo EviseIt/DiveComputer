@@ -28,6 +28,7 @@ namespace Abo.DiveComputer.WPF
         private DiveProfile _currentDiveProfile;
         private CompartmentsViewModel _compartmentsViewModel;
         private GradientFactorViewModel _gradientFactorViewModel;
+        private GasSettingsViewModel _gasSettingsViewModel;
 
         public MainWindow()
         {
@@ -40,9 +41,14 @@ namespace Abo.DiveComputer.WPF
                 {
                     _compartments.GradientFactorsSettings=_gradientFactorViewModel.GradientFactorsSettings;
                 };
+                _gasSettingsViewModel = (GasSettingsViewModel)this.Resources["GasSettingsViewModel"];
+                _gasSettingsViewModel.GasSettingsChanged += (s, a) =>
+                {
+                    _compartments.GasSettings = _gasSettingsViewModel.GasSettings;
+                };
 
             };
-            BulhmanCompartments.DEBUG = true;
+            BulhmanCompartments.DEBUG = false;
             Diver diver = new Diver();
           
             _compartments = diver.Compartments;
@@ -152,6 +158,7 @@ namespace Abo.DiveComputer.WPF
         private async void BtnCompute_OnClick(object sender, RoutedEventArgs e)
         {
             _compartments.GradientFactorsSettings=_gradientFactorViewModel.GradientFactorsSettings;
+            _compartments.GasSettings=_gasSettingsViewModel.GasSettings;
             await _computeAsync();
         }
 

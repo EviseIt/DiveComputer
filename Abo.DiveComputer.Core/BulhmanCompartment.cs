@@ -21,8 +21,9 @@ namespace Abo.DiveComputer.Core
         private double K;   // ln2/halfperiodMin
         public MValues MValues { get; }
 
-        public BulhmanCompartment(double halfTimeMin, double aBulhmanCoeff, double bBulhmanCoeff)
+        public BulhmanCompartment(BulhmanCompartments owner,double halfTimeMin, double aBulhmanCoeff, double bBulhmanCoeff)
         {
+            this.Compartments = owner;
             _halfLife = halfTimeMin;
             Depth = 0;
             PN2Tissue = PinspN2(Pamb(Depth)); // état initial à l’équilibre
@@ -36,6 +37,8 @@ namespace Abo.DiveComputer.Core
             SetComputationParameters(GradientFactorsSettings.Default, DiveProfile);
 
         }
+
+        public BulhmanCompartments Compartments { get; }
 
         public GradientFactorLines GradientFactorLines { get; private set; }
 
@@ -211,7 +214,7 @@ namespace Abo.DiveComputer.Core
             }
             else
             {
-                retValue = BulhmanCompartments.FN2 * (pamb - BulhmanCompartments.PH2O);
+                retValue =((double) Compartments.GasSettings.N2Percentage)/100 * (pamb - BulhmanCompartments.PH2O);
             }
 
             return retValue;
@@ -298,6 +301,40 @@ namespace Abo.DiveComputer.Core
         public DiveProfile DiveProfile { get; private set; }
     }
 
+    public class GasSettings
+    {
+        private int _o2Percentage;
+        private static readonly GasSettings _air;
+
+        public int O2Percentage
+        {
+            get => _o2Percentage;
+            set
+            {
+                if (value < 0 || value > 100)
+                    throw new ArgumentOutOfRangeException(nameof(O2Percentage), value, "O2Percentage must be between 0 and 100 inclusive.");
+                _o2Percentage = value;
+            }
+        }
+
+        public int N2Percentage
+        {
+            get => 100 - O2Percentage;
+            
+        }
+
+        static GasSettings()
+        {
+            _air = new GasSettings() { O2Percentage = 21 };
+        }
+        public static GasSettings Air
+        {
+            get
+            {
+                return _air;
+            }
+        }
+    }
     public class GradientFactorsSettings
     {
         private int _low;

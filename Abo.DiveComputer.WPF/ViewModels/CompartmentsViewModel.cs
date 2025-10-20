@@ -46,7 +46,7 @@ namespace Abo.DiveComputer.WPF.ViewModels
 
         public void Refresh()
         {
-            if(this.Compartments.D)
+           //TODO
         }
     }
 }
