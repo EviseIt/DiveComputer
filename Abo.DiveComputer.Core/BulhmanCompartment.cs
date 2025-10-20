@@ -90,7 +90,7 @@ namespace Abo.DiveComputer.Core
 
             this.MValues = new MValues(ABulhmanCoeff, BBulhmanCoeff);
        
-            SetComputationParameters(GradientFactorsSettings.Default, 20,7);
+            SetComputationParameters(GradientFactorsSettings.Default, DiveProfile);
           //  SetGradientFactors(GradientFactorsSettings.Default);
 
         }
@@ -345,12 +345,15 @@ namespace Abo.DiveComputer.Core
 
             return retValue;
         }
-
-        public void SetComputationParameters(GradientFactorsSettings gradientFactorsSettings,double maxMn,double maxAmbiantPressure)
+        
+        public void SetComputationParameters(GradientFactorsSettings gradientFactorsSettings,RealWorldPoints diveProfile)
         {
+            this.DiveProfile = diveProfile;
             this.GradientFactorLines = new GradientFactorLines(MValues.AffineLine, N2AmbiantPressure.GetInstance().AffineLine, gradientFactorsSettings.High, gradientFactorsSettings.Low);
             GradientFactorLines.SolveForX(1, 7);
         }
+
+        public RealWorldPoints DiveProfile { get; private set; }
     }
 
     public class GradientFactorsSettings

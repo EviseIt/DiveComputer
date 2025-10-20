@@ -194,6 +194,14 @@ public class RealWorldPoints
         }
     }
 
+    public double MaxAmbiantPressure
+    {
+        get
+        {
+            return Math.Abs(MinWorldY)/10+1.0;
+        }
+    }
+
     /// <summary>
     /// Enumérer les points du monde réel en appelant la fonction de rappel pour chaque point.
     /// </summary>

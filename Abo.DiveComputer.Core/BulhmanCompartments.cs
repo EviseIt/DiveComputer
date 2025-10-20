@@ -201,7 +201,7 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         Reset();
         foreach (var compartment in _compartments)
         {
-            compartment.SetComputationParameters(GradientFactorsSettings,maxMn,maxAmbientPressure);
+            compartment.SetComputationParameters(GradientFactorsSettings,diveProfile);
         }
 
 

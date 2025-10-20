@@ -5,7 +5,7 @@
 /// </summary>
 public class GradientFactorLines
 {
-    private readonly AffineLine _mValues;//MValues
+    public AffineLine MValues { get; }//MValues
     private readonly AffineLine _ambiant;//Ambiant pressure
 
 
@@ -14,7 +14,7 @@ public class GradientFactorLines
 
     public GradientFactorLines(AffineLine mValues,AffineLine ambiant,int gfHPercentage,int gfLowPercentage)
     {
-        _mValues = mValues;
+        this.MValues = mValues;
         _ambiant = ambiant;
         GFH = 100-gfHPercentage;
         GFL = 100-gfLowPercentage;
@@ -33,14 +33,14 @@ public class GradientFactorLines
     {
         //DELTA X=distance entre les deux points X2 et X1 tels que Y2=Y1=A2X2+B2=A1X1+B1
         double x1 = xLow;
-        double deltaLow=((_mValues.A-_ambiant.A)*x1+_mValues.B-_ambiant.B)/_ambiant.A;
+        double deltaLow=((MValues.A-_ambiant.A)*x1+ MValues.B-_ambiant.B)/_ambiant.A;
         double xResultLow= x1 + deltaLow * ((double)GFL/ 100.00);
-        double yResultLow = _mValues.GetY(xLow).Y;
+        double yResultLow = MValues.GetY(xLow).Y;
         //=>Point haut de la droite GF xresult,yresult
 
         //DELTA Y=distance entre les deux points Y2 et Y1 tels que Y2=A2X+B2 et Y=A1X+B1 et X=cte
-        double deltaHigh = (_ambiant.A - _mValues.A) * xHigh + _ambiant.B - _mValues.B;
-        double yResultHigh = _mValues.GetY(xHigh).Y+ deltaHigh * ((double)GFH / 100.00);
+        double deltaHigh = (_ambiant.A - MValues.A) * xHigh + _ambiant.B - MValues.B;
+        double yResultHigh = MValues.GetY(xHigh).Y+ deltaHigh * ((double)GFH / 100.00);
         double xResultHigh = xHigh;
 
         this.High = new RealWorldPoint(xResultHigh, yResultHigh);
@@ -57,4 +57,6 @@ public class GradientFactorLines
     public RealWorldPoint Low { get; private set; }
 
     public RealWorldPoint High { get; private set; }
+
+    
 }
