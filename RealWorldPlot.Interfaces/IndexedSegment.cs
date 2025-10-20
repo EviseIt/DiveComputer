@@ -1,6 +1,6 @@
 ﻿namespace RealWorldPlot.Interfaces;
 
-public class IndexedSegment:BaseSegment<IndexedRealWorldPoint>
+public class IndexedSegment : BaseSegment<IndexedRealWorldPoint>
 {
     public IndexedSegment(IndexedRealWorldPoint pointA, IndexedRealWorldPoint pointB) : base(pointA, pointB)
     {
@@ -9,5 +9,10 @@ public class IndexedSegment:BaseSegment<IndexedRealWorldPoint>
     public Segment ToSegment()
     {
         return new Segment(new RealWorldPoint(PointA.X, PointA.Y), new RealWorldPoint(PointB.X, PointB.Y));
+    }
+
+    public bool Contains(RealWorldPoint point)
+    {
+        return contains(PointA.X, PointB.X, PointA.Y, PointB.Y, point.X, point.Y);
     }
 }

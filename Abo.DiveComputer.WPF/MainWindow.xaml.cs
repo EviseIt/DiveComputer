@@ -25,7 +25,7 @@ namespace Abo.DiveComputer.WPF
     {
         private readonly SetPointsHelper _setPointsHelper;
         private readonly BulhmanCompartments _compartments;
-        private RealWorldPoints _currentDiveProfile;
+        private DiveProfile _currentDiveProfile;
         private CompartmentsViewModel _compartmentsViewModel;
         private GradientFactorViewModel _gradientFactorViewModel;
 
@@ -69,7 +69,7 @@ namespace Abo.DiveComputer.WPF
             plot.YAxisLabel = "Profondeur (mètres)";
             plot.OnInsertPointRequest += _onInsertPointRequest;
             plot.OnPointSelectedHandler += _onPointSelectedHandler;
-            RealWorldPoints diveProfile = new RealWorldPoints();
+            DiveProfile diveProfile = new DiveProfile();
 
             plot.SelectionVisualInfo.Color = Colors.DarkOrange;
             plot.XGraduation = new Graduation(0, 5);
@@ -94,14 +94,13 @@ namespace Abo.DiveComputer.WPF
             plot.RealWorldClick += p =>
             {
 
-                // DiveComputer diveComputer = new DiveComputer(_dive);
+              
 
                 //MessageBox.Show($"Coordonnées : X = {p.X:F2}, Y = {p.Y:F2}");
             };
 
 
-            //plot2.XGraduation = new Graduation(1, 1);
-            //plot2.YGraduation = new Graduation(1, 1);
+           
 
             _currentDiveProfile= diveProfile;
 
@@ -109,10 +108,10 @@ namespace Abo.DiveComputer.WPF
 
         private void _onPointSelectedHandler(object sender, PointSelectedEventArgs point)
         {
-            //plot3.SetPoints(   _dive.GetTensionHistoryOfPoint(point.SelectedPoint), new PenInfo(Colors.DarkGreen, 1.0));
+            
         }
 
-        private void  _computeAll(RealWorldPoints diveProfile)
+        private void  _computeAll(DiveProfile diveProfile)
         {
             _compartments.ComputeDiveProfile(diveProfile);
             _setPointsHelper.SetPoints();
@@ -135,7 +134,7 @@ namespace Abo.DiveComputer.WPF
         }
         private void Points_OnDataChanged(RealWorldPoints diveProfile)
         {
-            _currentDiveProfile = diveProfile;
+            _currentDiveProfile = new DiveProfile(diveProfile);
           
 
         }

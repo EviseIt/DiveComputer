@@ -23,7 +23,7 @@ public class Diver
 
     public double SurfaceAirConsuptionLPerS { get; private set; }
 
-    public void ComputeDiveProfile(RealWorldPoints diveProfile)
+    public void ComputeDiveProfile(DiveProfile diveProfile)
     {
         if(!_initialized)
             throw new InvalidOperationException("Diver not initialized");

@@ -14,7 +14,8 @@ public partial class RealWorldPlot : Canvas,INotifyPropertyChanged
     /// <summary>
     /// Données statiques, non modifiables
     /// </summary>
-    private Dictionary<RealWorldPoints,PenInfo> _staticData=new();
+    private Dictionary<RealWorldPoints,PenInfo> _staticDataSegments=new();
+    private Dictionary<RealWorldPoint, PenInfo> _staticDataPoints= new();
     /// <summary>
     /// Données statiques, non modifiables de polygones
     /// </summary>
@@ -39,11 +40,16 @@ public partial class RealWorldPlot : Canvas,INotifyPropertyChanged
     /// <param name="penInfo"></param>
     public void AppendStaticData(RealWorldPoints realWorldPoints, PenInfo penInfo)
     {
-        _staticData.Add(realWorldPoints, penInfo);
+        _staticDataSegments.Add(realWorldPoints, penInfo);
+    }
+    public void AppendStaticData(RealWorldPoint realWorldPoint, PenInfo penInfo)
+    {
+        _staticDataPoints.Add(realWorldPoint, penInfo);
     }
     public virtual void ClearStaticData()
     {
-        _staticData.Clear();
+        _staticDataSegments.Clear();
+        _staticDataPoints.Clear();
     }
 
     /// <summary>

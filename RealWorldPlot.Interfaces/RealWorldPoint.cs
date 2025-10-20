@@ -30,5 +30,7 @@ namespace RealWorldPlot.Interfaces
             //pas de X et Y deux points avec les mêmes coordonnées sont égaux mais n'ont pas la même identité
             return base.GetHashCode();
         }
+
+       
     }
 }

@@ -113,6 +113,8 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
             double n2Tension = compartmentValue.TensionN2;
             double ambPressure = (Math.Abs(depth) / 10.0) + BulhmanCompartments.PSurfaceBar;
 
+
+
             DateTime start0 = DateTime.Now;
             //Ajouter les points de tension dans le graphe par compartiment
             if (!_tensionByCompartment.TryGetValue(compartment, out RealWorldPoints? compartmentData))
@@ -136,24 +138,28 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
 
             IndexedSegment? segment = tensionByAmbiantPressureByCompartmentData.GetLastTwoPoints();
             //si intersection avec Gradientfactpr=>plafond
-            //ToDo
-            //if (segment != null)
-            //{
-            //    //remplacer le temps par la pression ambiante
-            //    if (compartment._halfLife == 12.5)
-            //    {
+            if (segment != null)
+            {
+                //remplacer le temps par la pression ambiante
+                if (compartment._halfLife == 12.5)
+                {
 
-            //    }
-            //    IntersectionResult intersectionResult = EuclidianComputer.FindIntersection(compartment.GradientFactorLine.Low, compartment.GradientFactorLine.High, segment.PointA, segment.PointB);
-            //    if (intersectionResult.Intersects && intersectionResult.Point.X > 1)
-            //    {
-            //        var inter = intersectionResult.Point;
-            //        if ((StopPoint == null || StopPoint.X < inter.X))/// && segment.Contains(inter))
-            //        {
-            //            StopPoint = inter;
-            //        }
-            //    }
-            //}
+                }
+                IntersectionResult intersectionResult = EuclidianComputer.FindIntersection(compartment.GradientFactorLines.Low, compartment.GradientFactorLines.High, segment.PointA, segment.PointB);
+                if (intersectionResult.Intersects && intersectionResult.Point.X > 1)
+                {
+                    var inter = intersectionResult.Point;
+                    if ((StopPoint == null || StopPoint.X < inter.X) && segment.Contains(inter))
+                    {
+                        if (StopPoint == null)
+                        {
+                            StopPoint = new StopPoint();
+                        }
+                        StopPoint.AssignFrom(inter,compartment);
+                        
+                    }
+                }
+            }
 
             //var elapsed0 = DateTime.Now - start0;
             //==> System.Diagnostics.Debug.WriteLine($"Inner: {elapsed0.TotalMilliseconds}");
@@ -163,6 +169,10 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         //=> System.Diagnostics.Debug.WriteLine($"MoveTo:=> {elapsed.TotalMilliseconds} for ALL");
         return director;
     }
+    /// <summary>
+    /// Point de palier le plus profond
+    /// </summary>
+    public StopPoint StopPoint { get; private set; }
 
     public IEnumerator<BulhmanCompartment> GetEnumerator()
     {
@@ -179,6 +189,8 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         _tensionByCompartment.Clear();
         _tensionByAmbiantPressureByCompartment.Clear();
         Ndl = new();
+        StopPoint = null;
+
         foreach (var compartment in this)
         {
             compartment.Reset();
@@ -189,7 +201,7 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
     /// Calculer tout le profil de plongée
     /// </summary>
     /// <param name="diveProfile"></param>
-    public void ComputeDiveProfile(RealWorldPoints diveProfile)
+    public void ComputeDiveProfile(DiveProfile diveProfile)
     {
         this.DiveProfile=diveProfile;
         double maxMn = diveProfile.MaxWorldX;

@@ -16,12 +16,21 @@ public class RealWorldPoints
 
     public event OnDataChangedHandler? OnDataChanged;
 
-    private readonly Dictionary<Guid, IndexedRealWorldPoint> _points = new();
+    private  Dictionary<Guid, IndexedRealWorldPoint> _points = new();
     private IndexedRealWorldPoint _firstPoint;
     private IndexedRealWorldPoint _lastPoint;
 
     public int Count => _points.Count;
 
+
+    protected void assignFrom(RealWorldPoints realWorldPoints)
+    {
+        Clear();
+        this._lastPoint=realWorldPoints._lastPoint;
+        this._firstPoint=realWorldPoints._firstPoint;
+        this._points= realWorldPoints._points;
+
+    }
 
     public void Clear()
     {
@@ -194,14 +203,7 @@ public class RealWorldPoints
         }
     }
 
-    public double MaxAmbiantPressure
-    {
-        get
-        {
-            return Math.Abs(MinWorldY)/10+1.0;
-        }
-    }
-
+  
     /// <summary>
     /// Enumérer les points du monde réel en appelant la fonction de rappel pour chaque point.
     /// </summary>

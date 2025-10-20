@@ -119,7 +119,7 @@ public partial class RealWorldPlot : Canvas, INotifyPropertyChanged
         }
 
 
-        foreach (var staticData in _staticData)
+        foreach (var staticData in _staticDataSegments)
         {
             if (staticData.Key.HasAtLeastTwoPoint)
             {
@@ -130,6 +130,14 @@ public partial class RealWorldPlot : Canvas, INotifyPropertyChanged
                 });
             }
         }
+        foreach (var staticPointData in _staticDataPoints)
+        {
+
+            var sel = RealToPixel(staticPointData.Key, plotWidth, plotHeight);
+            SolidColorBrush pointBrush = new SolidColorBrush(staticPointData.Value.Color);
+            dc.DrawEllipse(pointBrush, new Pen(pointBrush, 1), sel, SelectionVisualInfo.Radius, SelectionVisualInfo.Radius);
+
+        }
 
         foreach (var curve in _curvesByKey.Values)
         {
@@ -138,7 +146,7 @@ public partial class RealWorldPlot : Canvas, INotifyPropertyChanged
                 curve.Points.EnumerateByTwoPoints((pPrevious, pNext) =>
                 {
 
-                    var z=pPrevious;
+                    var z = pPrevious;
                     var x = pNext;
 
                     dc.DrawLine(curve.PenInfo.ToPen(), RealToPixel(pPrevious, plotWidth, plotHeight), RealToPixel(pNext, plotWidth, plotHeight));

@@ -30,6 +30,8 @@ namespace Abo.DiveComputer.Core
             {
                 this.Ndl = ndl;
             }
+
+            
         }
 
         public double Ndl { get; private set; } = double.PositiveInfinity;

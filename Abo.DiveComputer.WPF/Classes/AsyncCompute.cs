@@ -11,7 +11,7 @@ namespace Abo.DiveComputer.WPF.Classes
     internal class AsyncCompute
     {
         private readonly Thread _thread;
-        private RealWorldPoints _diveProfile;
+        private DiveProfile _diveProfile;
         private BulhmanCompartments _compartments;
         public event EventHandler OnComputationDone;
         
@@ -27,7 +27,7 @@ namespace Abo.DiveComputer.WPF.Classes
             OnComputationDone.Invoke(this,new EventArgs());
         }
 
-        public void Compute(RealWorldPoints diveProfile, BulhmanCompartments compartments)
+        public void Compute(DiveProfile diveProfile, BulhmanCompartments compartments)
         {
             _diveProfile=diveProfile;
             _compartments = compartments;

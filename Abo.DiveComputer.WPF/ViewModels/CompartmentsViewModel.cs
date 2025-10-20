@@ -43,5 +43,10 @@ namespace Abo.DiveComputer.WPF.ViewModels
         {
             return GetEnumerator();
         }
+
+        public void Refresh()
+        {
+            if(this.Compartments.D)
+        }
     }
 }
