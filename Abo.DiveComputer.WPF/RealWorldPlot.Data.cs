@@ -41,6 +41,11 @@ public partial class RealWorldPlot : Canvas,INotifyPropertyChanged
     {
         _staticData.Add(realWorldPoints, penInfo);
     }
+    public virtual void ClearStaticData()
+    {
+        _staticData.Clear();
+    }
+
     /// <summary>
     /// Ajoute des figures statiques à la visualisation.On ne peut pas ajouter de points à ces courbes, elles sont considérées comme des données de référence.
     /// </summary>

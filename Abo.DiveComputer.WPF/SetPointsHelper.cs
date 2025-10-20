@@ -47,22 +47,38 @@ namespace Abo.DiveComputer.WPF
             plotMValues.XGraduation = new Graduation(1, 1);
             plotMValues.YGraduation = new Graduation(0.8, 1);
 
-            plotMValues.AppendStaticData(compartment.MValues.Points, new PenInfo(Colors.Crimson, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
-
-            plotMValues.AppendStaticData(N2AmbiantPressure.GetInstance().Points, new PenInfo(Colors.Blue, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
-
-            plotMValues.AppendStaticData(compartment.GradientFactor.Points, new PenInfo(Colors.Aqua, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
-
+       
         }
 
-        public void SetPoints(BulhmanCompartments compartments)
+        public void SetPoints(BulhmanCompartments compartments2)
         {
             var start = DateTime.Now;
-            foreach (var compartment in compartments)
+            var compartments = _compartmentsViewModel.Compartments;
+
+            foreach (var x in _compartmentsViewModel)
             {
+                BulhmanCompartment compartment = x.Compartment;
                 _plotsTn2ByCompartment[compartment].SetPoints(compartments.GetTensions(compartment), new PenInfo(_compartmentsViewModel[compartment].Color, _penInfo.Width));
                 _plotsMValueDataByCompartment[compartment].SetPoints(compartments.GetMValuesData(compartment), _penInfo, false);
                 _plotsMValueDataByCompartment[compartment].XMax = compartments.GetMValuesData(compartment).MaxWorldX;
+
+
+
+                _plotsMValueDataByCompartment[compartment].ClearStaticData();
+
+                var zz = compartments.DiveProfile;
+
+                ////MValuesAndGradientFactorViewModel mValuesAndGradientFactorViewModel = new(compartment.MValues, compartment.GradientFactorLines, N2AmbiantPressure.GetInstance());
+                _plotsMValueDataByCompartment[compartment].AppendStaticData(compartment.MValues.Points, new PenInfo(Colors.Crimson, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
+                _plotsMValueDataByCompartment[compartment].AppendStaticData(N2AmbiantPressure.GetInstance().Points, new PenInfo(Colors.Blue, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
+                _plotsMValueDataByCompartment[compartment].AppendStaticData(compartment.GradientFactorLines.Points, new PenInfo(Colors.Aqua, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
+
+
+                ////_plotsMValueDataByCompartment[compartment].AppendStaticData(compartment.MValues.Points, new PenInfo(Colors.Crimson, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
+                ////_plotsMValueDataByCompartment[compartment].AppendStaticData(N2AmbiantPressure.GetInstance().GetPoints(maxAmbiantPressure), new PenInfo(Colors.Blue, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
+                ////_plotsMValueDataByCompartment[compartment].AppendStaticData(compartment.GradientFactorLine.GetPoints(maxAmbiantPressure), new PenInfo(Colors.Aqua, 1.5, new Double[] { 5.0, 5.0, 5.0 }));
+
+
             }
             var end = DateTime.Now;
             Console.WriteLine($"SetPoints took {end - start} ms for all compartments.");

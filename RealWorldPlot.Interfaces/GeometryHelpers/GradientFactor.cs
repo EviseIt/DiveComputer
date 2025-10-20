@@ -3,16 +3,16 @@
 /// <summary>
 /// Ayant du affines de coeff A et B, trouve l'équation de la droite de gradient fator GF pou GF-H(hih) et GF-L(low)
 /// </summary>
-public class GradientFactor
+public class GradientFactorLines
 {
-    private readonly AffineLine _mValues;
-    private readonly AffineLine _ambiant;
+    private readonly AffineLine _mValues;//MValues
+    private readonly AffineLine _ambiant;//Ambiant pressure
 
 
 
-      
 
-    public GradientFactor(AffineLine mValues,AffineLine ambiant,int gfHPercentage,int gfLowPercentage)
+
+    public GradientFactorLines(AffineLine mValues,AffineLine ambiant,int gfHPercentage,int gfLowPercentage)
     {
         _mValues = mValues;
         _ambiant = ambiant;
@@ -24,11 +24,12 @@ public class GradientFactor
     public int GFH { get;  }
     /// <summary>
     /// ATENTION xHigh  < xLow  (Hiht Low au sens de la profondeur)
+    /// Résout l'équation de la droite de gradient factor par rapport aux Mvalues et à la droite des pressions ambiantes pour avoir la droite des GF
     /// </summary>
     /// <param name="xHigh"></param>
     /// <param name="xLow"></param>
     /// <returns></returns>
-    public  void SolveForX(double xHigh, double xLow)
+    public void SolveForX(double xHigh, double xLow)
     {
         //DELTA X=distance entre les deux points X2 et X1 tels que Y2=Y1=A2X2+B2=A1X1+B1
         double x1 = xLow;

@@ -191,14 +191,17 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
     /// <param name="diveProfile"></param>
     public void ComputeDiveProfile(RealWorldPoints diveProfile)
     {
+        this.DiveProfile=diveProfile;
         double maxMn = diveProfile.MaxWorldX;
+        double maxAmbientPressure = (Math.Abs(diveProfile.MinWorldY) / 10.0) + BulhmanCompartments.PSurfaceBar;
+
         double sampling = maxMn / 120;
         //Echantillonner toutes N points
         var sampledDiveProfile = diveProfile.Sample(sampling);
         Reset();
         foreach (var compartment in _compartments)
         {
-            compartment.SetGradientFactors(GradientFactorsSettings);
+            compartment.SetComputationParameters(GradientFactorsSettings,maxMn,maxAmbientPressure);
         }
 
 
@@ -230,4 +233,6 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
 
 
     }
+
+    public RealWorldPoints DiveProfile { get; private set; }
 }

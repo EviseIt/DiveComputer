@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,13 @@ using Abo.DiveComputer.WPF.Classes;
 
 namespace Abo.DiveComputer.WPF.ViewModels
 {
-    public class CompartmentsViewModel
+    public class CompartmentsViewModel:IEnumerable<CompartmentViewModel>
     {
         private readonly Dictionary<BulhmanCompartment, CompartmentViewModel> _viewModelsByCompartment = new();
 
         public CompartmentsViewModel(BulhmanCompartments compartments)
         {
+            this.Compartments = compartments;
             SolidColorBrush[] brushes = PaletteGenerator.GenerateDistinct(compartments.Count());
             int i = 0;
             foreach (var compartment in compartments)
@@ -25,9 +27,21 @@ namespace Abo.DiveComputer.WPF.ViewModels
             }
         }
 
+        public BulhmanCompartments Compartments { get; }
+
         public CompartmentViewModel this[BulhmanCompartment compartment]
         {
             get=> _viewModelsByCompartment [compartment];
+        }
+
+        public IEnumerator<CompartmentViewModel> GetEnumerator()
+        {
+            return _viewModelsByCompartment.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

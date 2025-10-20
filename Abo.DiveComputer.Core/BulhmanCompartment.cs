@@ -90,11 +90,12 @@ namespace Abo.DiveComputer.Core
 
             this.MValues = new MValues(ABulhmanCoeff, BBulhmanCoeff);
        
-            SetGradientFactors(GradientFactorsSettings.Default);
+            SetComputationParameters(GradientFactorsSettings.Default, 20,7);
+          //  SetGradientFactors(GradientFactorsSettings.Default);
 
         }
 
-        public GradientFactor GradientFactor { get; private set; }
+        public GradientFactorLines GradientFactorLines { get; private set; }
 
         public void Reset()
         {
@@ -144,7 +145,7 @@ namespace Abo.DiveComputer.Core
             if (elapsedTimeInSecondsStep <= 0)
             {
                 Depth = profondeur;
-                return new BulhmanCompartmentValue(PN2Tissue, double.PositiveInfinity, GradientFactor.AffineLine.GetY(BulhmanCompartments.PSurfaceBar).Y);
+                return new BulhmanCompartmentValue(PN2Tissue, double.PositiveInfinity, GradientFactorLines.AffineLine.GetY(BulhmanCompartments.PSurfaceBar).Y);
             }
 
             double deltaT = elapsedTimeInSecondsStep / 60.0;
@@ -173,7 +174,7 @@ namespace Abo.DiveComputer.Core
             double reverseTT = reverseT * 60 + _latestElapsedTime;
 
             //  double xx= InverseTime(P, Pi0, P0, R, _halfLife);
-            double gf = GradientFactor.AffineLine.GetY(Pamb(Depth)).Y;
+            double gf = GradientFactorLines.AffineLine.GetY(Pamb(Depth)).Y;
             double yy;
             try
             {
@@ -221,10 +222,10 @@ namespace Abo.DiveComputer.Core
 
             }
             N2TensionPoints.AddNewPoint(new RealWorldPoint(elapsedTimeInSeconds / 60, PN2Tissue), diveProfilePointId);
-            GradientFactorPoints.AddNewPoint(new RealWorldPoint(elapsedTimeInSeconds / 60, GradientFactor.AffineLine.GetY(Pamb(Depth)).Y), diveProfilePointId);
+            GradientFactorPoints.AddNewPoint(new RealWorldPoint(elapsedTimeInSeconds / 60, GradientFactorLines.AffineLine.GetY(Pamb(Depth)).Y), diveProfilePointId);
 
 
-            return new BulhmanCompartmentValue(PN2Tissue, ndl, GradientFactor.AffineLine.GetY(Pamb(Depth)).Y);
+            return new BulhmanCompartmentValue(PN2Tissue, ndl, GradientFactorLines.AffineLine.GetY(Pamb(Depth)).Y);
         }
         // k = ln(2)/tau ; inverse fermée (branche principale W0)
         // t = B/R + (1/k) * W( -(k*A/R) * exp(-k*B/R) )
@@ -345,10 +346,10 @@ namespace Abo.DiveComputer.Core
             return retValue;
         }
 
-        public void SetGradientFactors(GradientFactorsSettings gradientFactorsSettings)
+        public void SetComputationParameters(GradientFactorsSettings gradientFactorsSettings,double maxMn,double maxAmbiantPressure)
         {
-            this.GradientFactor = new GradientFactor(MValues.AffineLine, N2AmbiantPressure.GetInstance().AffineLine, gradientFactorsSettings.High, gradientFactorsSettings.Low);
-            GradientFactor.SolveForX(1, 7);
+            this.GradientFactorLines = new GradientFactorLines(MValues.AffineLine, N2AmbiantPressure.GetInstance().AffineLine, gradientFactorsSettings.High, gradientFactorsSettings.Low);
+            GradientFactorLines.SolveForX(1, 7);
         }
     }
 
