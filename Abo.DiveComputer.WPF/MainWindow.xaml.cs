@@ -115,7 +115,7 @@ namespace Abo.DiveComputer.WPF
         private void  _computeAll(RealWorldPoints diveProfile)
         {
             _compartments.ComputeDiveProfile(diveProfile);
-            _setPointsHelper.SetPoints(_compartments);
+            _setPointsHelper.SetPoints();
             NDL.SetPoints(this._compartments.Ndl,new PenInfo(Color.FromRgb(0,0,255),1));
 
 
@@ -170,7 +170,7 @@ namespace Abo.DiveComputer.WPF
             if (Dispatcher.CheckAccess())
             {
                 wait.Visibility = Visibility.Hidden;
-                _setPointsHelper.SetPoints(_compartments);
+                _setPointsHelper.SetPoints();
                 NDL.SetPoints(this._compartments.Ndl, new PenInfo(Color.FromRgb(0, 0, 255), 1));
 
 

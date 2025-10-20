@@ -50,7 +50,7 @@ namespace Abo.DiveComputer.WPF
        
         }
 
-        public void SetPoints(BulhmanCompartments compartments2)
+        public void SetPoints()
         {
             var start = DateTime.Now;
             var compartments = _compartmentsViewModel.Compartments;
