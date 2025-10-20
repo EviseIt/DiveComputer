@@ -89,8 +89,8 @@ namespace Abo.DiveComputer.Core
             K = BulhmanCompartments.ln2 / _halfLife;
 
             this.MValues = new MValues(ABulhmanCoeff, BBulhmanCoeff);
-            SetGradientFactors(85,85);
-         
+       
+            SetGradientFactors(GradientFactorsSettings.Default);
 
         }
 
@@ -345,10 +345,51 @@ namespace Abo.DiveComputer.Core
             return retValue;
         }
 
-        public void SetGradientFactors(int low, int high)
+        public void SetGradientFactors(GradientFactorsSettings gradientFactorsSettings)
         {
-            this.GradientFactor = new GradientFactor(MValues.AffineLine, N2AmbiantPressure.GetInstance().AffineLine, high, low);
+            this.GradientFactor = new GradientFactor(MValues.AffineLine, N2AmbiantPressure.GetInstance().AffineLine, gradientFactorsSettings.High, gradientFactorsSettings.Low);
             GradientFactor.SolveForX(1, 7);
+        }
+    }
+
+    public class GradientFactorsSettings
+    {
+        private int _low;
+        private int _high;
+        private static readonly GradientFactorsSettings _default;
+
+        public int Low
+        {
+            get => _low;
+            set
+            {
+                if (value < 0 || value > 100)
+                    throw new ArgumentOutOfRangeException(nameof(Low), value, "Low must be between 0 and 100 inclusive.");
+                _low = value;
+            }
+        }
+
+        public int High
+        {
+            get => _high;
+            set
+            {
+                if (value < 0 || value > 100)
+                    throw new ArgumentOutOfRangeException(nameof(High), value, "High must be between 0 and 100 inclusive.");
+                _high = value;
+            }
+        }
+
+        static GradientFactorsSettings()
+        {
+            _default = new GradientFactorsSettings() { High = 85, Low = 85 };
+        }
+        public static GradientFactorsSettings Default
+        {
+            get
+            {
+                return _default;
+            }
         }
     }
 }

@@ -27,12 +27,24 @@ namespace Abo.DiveComputer.WPF
         private readonly BulhmanCompartments _compartments;
         private RealWorldPoints _currentDiveProfile;
         private CompartmentsViewModel _compartmentsViewModel;
+        private GradientFactorViewModel _gradientFactorViewModel;
 
         public MainWindow()
         {
+
+            InitializeComponent();
+            this.Loaded += (s, a) =>
+            {
+                _gradientFactorViewModel = (GradientFactorViewModel)this.Resources["GradientFactorViewModel"];
+                _gradientFactorViewModel.GradientFactorChanged += (s, a) =>
+                {
+                    _compartments.GradientFactorsSettings=_gradientFactorViewModel.GradientFactorsSettings;
+                };
+
+            };
             BulhmanCompartments.DEBUG = true;
             Diver diver = new Diver();
-            InitializeComponent();
+          
             _compartments = diver.Compartments;
             _compartmentsViewModel = new CompartmentsViewModel(_compartments);
             _setPointsHelper = new SetPointsHelper(_compartmentsViewModel, new PenInfo(Colors.CornflowerBlue, 1.0));
@@ -140,8 +152,7 @@ namespace Abo.DiveComputer.WPF
 
         private async void BtnCompute_OnClick(object sender, RoutedEventArgs e)
         {
-
-            _compartments.SetGradientFactors(40, 40);
+            _compartments.GradientFactorsSettings=_gradientFactorViewModel.GradientFactorsSettings;
             await _computeAsync();
         }
 
@@ -182,12 +193,7 @@ namespace Abo.DiveComputer.WPF
             }
         }
 
-        private void btnComputeTEST_Click(object sender, RoutedEventArgs e)
-        {
-            _compartments.SetGradientFactors(40,40);
-
-            
-        }
+        
     }
 
 

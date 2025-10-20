@@ -6,11 +6,16 @@
         xmlns:local="clr-namespace:Abo.DiveComputer.WPF"
         xmlns:realWorldPlotter="clr-namespace:RealWorldPlotter"
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:viewModels="clr-namespace:Abo.DiveComputer.WPF.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <realWorldPlotter:TextToDoubleConverter x:Key="textToDouble"/>
+        <realWorldPlotter:TextToPercentageConverter x:Key="textToPercentageConverter"></realWorldPlotter:TextToPercentageConverter>
+
         <system:Double x:Key="EllipseSize">12</system:Double>
+        <viewModels:GradientFactorViewModel x:Key="GradientFactorViewModel"></viewModels:GradientFactorViewModel>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -28,11 +33,14 @@
                 <TextBox Text="{Binding ElementName=plot,Path=XMax,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
                 <TextBox Text="{Binding ElementName=plot,Path=YMin,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
                 <Button Name="btnCompute" Click="BtnCompute_OnClick">Calculer</Button>
-                <Button Name="btnComputeTEST" Click="btnComputeTEST_Click">TEST</Button>
-                <TextBox Name="txtMinProf"></TextBox>
-                <TextBox Text="{Binding ElementName=plot,Path=YMin,Converter={StaticResource textToDouble},Mode=TwoWay}"></TextBox>
+                <StackPanel Height="50"></StackPanel>
+                <TextBlock Text="GF Bas"></TextBlock>
+                <TextBox Text="{Binding Source={StaticResource GradientFactorViewModel},Path=Low,Converter={StaticResource textToPercentageConverter},Mode=TwoWay}"></TextBox>
+                <TextBlock Text="GF Haut"></TextBlock>
+                <TextBox Text="{Binding Source={StaticResource GradientFactorViewModel},Path=High,Converter={StaticResource textToPercentageConverter},Mode=TwoWay}"></TextBox>
 
-<Viewbox Name="wait" Visibility="Hidden">
+
+                <Viewbox Name="wait" Visibility="Hidden">
                     <Grid Width="120" Height="120">
                         <!-- Cercle de fond -->
                         <Ellipse Stroke="#D0D0D0" StrokeThickness="8" />
@@ -78,7 +86,7 @@
         </Grid>
         <Grid Grid.Row="2">
             <TabControl>
-              
+
                 <TabItem Header="Buhlmann">
                     <TabControl>
                         <TabItem Name="T0">

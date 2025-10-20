@@ -30,13 +30,11 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         }
     }
 
-    public void SetGradientFactors(int low, int high)
+    public GradientFactorsSettings GradientFactorsSettings
     {
-        foreach (var compartment in _compartments)
-        {
-            compartment.SetGradientFactors(low, high);
-        }
-    }
+        get;
+        set;
+    } = GradientFactorsSettings.Default;
 
 
     private readonly BulhmanCompartment[] _compartments;
@@ -138,23 +136,24 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
 
             IndexedSegment? segment = tensionByAmbiantPressureByCompartmentData.GetLastTwoPoints();
             //si intersection avec Gradientfactpr=>plafond
-            if (segment != null)
-            {
-                //remplacer le temps par la pression ambiante
-                if (compartment._halfLife == 12.5)
-                {
+            //ToDo
+            //if (segment != null)
+            //{
+            //    //remplacer le temps par la pression ambiante
+            //    if (compartment._halfLife == 12.5)
+            //    {
 
-                }
-                IntersectionResult intersectionResult = EuclidianComputer.FindIntersection(compartment.GradientFactorLine.Low, compartment.GradientFactorLine.High, segment.PointA, segment.PointB);
-                if (intersectionResult.Intersects && intersectionResult.Point.X > 1)
-                {
-                    var inter = intersectionResult.Point;
-                    if ((StopPoint == null || StopPoint.X < inter.X))/// && segment.Contains(inter))
-                    {
-                        StopPoint = inter;
-                    }
-                }
-            }
+            //    }
+            //    IntersectionResult intersectionResult = EuclidianComputer.FindIntersection(compartment.GradientFactorLine.Low, compartment.GradientFactorLine.High, segment.PointA, segment.PointB);
+            //    if (intersectionResult.Intersects && intersectionResult.Point.X > 1)
+            //    {
+            //        var inter = intersectionResult.Point;
+            //        if ((StopPoint == null || StopPoint.X < inter.X))/// && segment.Contains(inter))
+            //        {
+            //            StopPoint = inter;
+            //        }
+            //    }
+            //}
 
             //var elapsed0 = DateTime.Now - start0;
             //==> System.Diagnostics.Debug.WriteLine($"Inner: {elapsed0.TotalMilliseconds}");
@@ -197,6 +196,11 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         //Echantillonner toutes N points
         var sampledDiveProfile = diveProfile.Sample(sampling);
         Reset();
+        foreach (var compartment in _compartments)
+        {
+            compartment.SetGradientFactors(GradientFactorsSettings);
+        }
+
 
         RealWorldPoints compartmentData = new RealWorldPoints();
         RealWorldPoints mValuesData = new RealWorldPoints();
