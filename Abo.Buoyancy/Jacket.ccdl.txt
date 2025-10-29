@@ -1,0 +1,2 @@
+﻿+CLASS Abo.Buoyancy.Jacket
++	EmptyVolumeDm3   decimal  ]0,10]	//Volume à vide

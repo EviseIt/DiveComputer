@@ -1,0 +1,3 @@
+﻿+CLASS Abo.Buoyancy.LeadWeight
+// COMMENT LINE
++    WeightKg   decimal	[0,200.4]	//Poids du lest en Kg

@@ -1,0 +1,7 @@
+﻿+CLASS Abo.Buoyancy.Person
+// COMMENT LINE
++    WeightKg   decimal	[0,200.4]	//Poids du lest en Kg
++    SizeCm   decimal	[100,240]	//Taille en cm
++	Age   int	[10,120]	//Age en années
+
+

@@ -1,0 +1,4 @@
+﻿+CLASS Abo.Buoyancy.Tank
+// COMMENT LINE
++    VolumeL   decimal	[5,20]	//Volume du bloc en litres
++    InitialPressureBar   decimal	[1,300]	//Pression initiale en bars

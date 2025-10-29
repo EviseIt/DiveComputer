@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Jacket.ccdl.cs">
+      <DependentUpon>Jacket.ccdl.txt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Suit.ccdl.cs">
+      <DependentUpon>Suit.ccdl.txt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Breather.ccdl.cs">
+      <DependentUpon>Breather.ccdl.txt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Tank.ccdl.cs">
+      <DependentUpon>Tank.ccdl.txt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Person.ccdl.cs">
+      <DependentUpon>Person.ccdl.txt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="LeadWeight.ccdl.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LeadWeight.ccdl.txt</DependentUpon>
+    </Compile>
+    <Compile Update="TextFile1 - Copy.ccdl.cs">
+      <DependentUpon>TextFile1 - Copy.ccdl.txt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Fins.ccdl.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Fins.ccdl.txt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Jacket.ccdl.txt">
+      <LastGenOutput>Jacket.ccdl.cs</LastGenOutput>
+      <Generator>CcdlGenerator</Generator>
+    </None>
+    <None Update="Suit.ccdl.txt">
+      <LastGenOutput>Suit.ccdl.cs</LastGenOutput>
+      <Generator>CcdlGenerator</Generator>
+    </None>
+    <None Update="Breather.ccdl.txt">
+      <LastGenOutput>Breather.ccdl.cs</LastGenOutput>
+      <Generator>CcdlGenerator</Generator>
+    </None>
+    <None Update="Tank.ccdl.txt">
+      <LastGenOutput>Tank.ccdl.cs</LastGenOutput>
+      <Generator>CcdlGenerator</Generator>
+    </None>
+    <None Update="Person.ccdl.txt">
+      <LastGenOutput>Person.ccdl.cs</LastGenOutput>
+      <Generator>CcdlGenerator</Generator>
+    </None>
+    <None Update="LeadWeight.ccdl.txt">
+      <LastGenOutput>LeadWeight.ccdl.cs</LastGenOutput>
+      <Generator>CcdlGenerator</Generator>
+    </None>
+    <None Update="Fins.ccdl.txt">
+      <Generator>CcdlGenerator</Generator>
+      <LastGenOutput>Fins.ccdl.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>

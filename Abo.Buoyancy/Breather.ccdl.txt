@@ -1,0 +1,4 @@
+﻿+CLASS Abo.Buoyancy.Breather
++	WeightKg   decimal	[1,4.4]	//Poids du lest en Kg
++   VolumeDm3 decimal 	[1,4.4]	//Volume des palmes en dm3
++	Name  string	[1,250]	//Nom des palmes

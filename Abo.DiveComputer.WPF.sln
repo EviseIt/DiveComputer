@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealWorldPlot.Interfaces", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abo.DiveComputer.MN90", "Abo.DiveComputer.MN90\Abo.DiveComputer.MN90.csproj", "{8AFA636D-931B-4C30-B694-1008747DE2C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abo.Buoyancy", "Abo.Buoyancy\Abo.Buoyancy.csproj", "{C91B601B-540B-4C4A-ACAA-4ED6B5189B27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyancyConsole", "BuyancyConsole\BuyancyConsole.csproj", "{28BB4CE8-E5A4-429D-A928-A87346653FE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{8AFA636D-931B-4C30-B694-1008747DE2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AFA636D-931B-4C30-B694-1008747DE2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AFA636D-931B-4C30-B694-1008747DE2C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C91B601B-540B-4C4A-ACAA-4ED6B5189B27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C91B601B-540B-4C4A-ACAA-4ED6B5189B27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C91B601B-540B-4C4A-ACAA-4ED6B5189B27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C91B601B-540B-4C4A-ACAA-4ED6B5189B27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

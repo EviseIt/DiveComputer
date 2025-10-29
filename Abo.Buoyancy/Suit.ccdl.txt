@@ -1,0 +1,2 @@
+﻿+CLASS Abo.Buoyancy.Suit
++	ThickNessMm   decimal	[3,12]	//Epaisseur en mm
