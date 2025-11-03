@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abo.Buoyancy", "Abo.Buoyanc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyancyConsole", "BuyancyConsole\BuyancyConsole.csproj", "{28BB4CE8-E5A4-429D-A928-A87346653FE3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfBuoyancy", "WpfBuoyancy\WpfBuoyancy.csproj", "{00DEB161-4B69-4111-9A39-8DA307B8F9A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28BB4CE8-E5A4-429D-A928-A87346653FE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00DEB161-4B69-4111-9A39-8DA307B8F9A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00DEB161-4B69-4111-9A39-8DA307B8F9A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00DEB161-4B69-4111-9A39-8DA307B8F9A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00DEB161-4B69-4111-9A39-8DA307B8F9A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,88 @@
+﻿<Window x:Class="WpfBuoyancy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfBuoyancy"
+        xmlns:viewModels="clr-namespace:WpfBuoyancy.ViewModels"
+        xmlns:buoyancy="clr-namespace:Abo.Buoyancy;assembly=Abo.Buoyancy"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <local:ArrowGeometryConverter x:Key="ArrowGeometryConverter"/>
+        <local:StringToIntConverter x:Key="ageConverter" Min="10" Max="120"></local:StringToIntConverter>
+        <local:StringToIntConverter x:Key="sizeCmConverter" Min="100" Max="240"></local:StringToIntConverter>
+        <local:StringToIntConverter x:Key="weightKgConverter" Min="1" Max="200"></local:StringToIntConverter>
+        <local:StringToIntConverter x:Key="combinaisonMmConverter" Min="1" Max="20"></local:StringToIntConverter>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ItemsControl Name="arrowPanel">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="#F7F7F7"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewModels:Arrow}">
+                    <Path Stroke="{Binding Stroke}"
+                          StrokeThickness="{Binding Thickness}"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round">
+                        <Path.Data>
+                            <MultiBinding Mode="TwoWay" Converter="{StaticResource ArrowGeometryConverter}">
+                                <Binding Path="Start.X"/>
+                                <Binding Path="Start.Y"/>
+                                <Binding Path="End.X"/>
+                                <Binding Path="End.Y"/>
+                                <Binding Path="HeadLength"/>
+                                <Binding Path="HeadAngle"/>
+                            </MultiBinding>
+                        </Path.Data>
+                    </Path>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4*"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Border Padding="4">
+                <StackPanel >
+                    <TextBlock>Age</TextBlock>
+                    <TextBox Text="{Binding Path=Age,Converter={StaticResource ageConverter}}"></TextBox>
+                    <TextBlock>Taille</TextBlock>
+                    <TextBox Text="{Binding Path=SizeCm,Converter={StaticResource sizeCmConverter}}"></TextBox>
+                    <TextBlock>Poids</TextBlock>
+                    <TextBox Text="{Binding Path=WeightKg,Converter={StaticResource weightKgConverter}}"></TextBox>
+                    <TextBlock>Sexe</TextBlock>
+                    <ComboBox Name="cboGender" ItemsSource="{x:Static buoyancy:Gender.Items}" SelectedItem="{Binding Path=Gender}"></ComboBox>
+
+                    <Border Height="10" Background="Bisque" Margin="0,4,0,4"></Border>
+                    <TextBlock>Bloc</TextBlock>
+                    <ComboBox Name="cboTank" ItemsSource="{x:Static buoyancy:Tank.Items}" SelectedItem="{Binding Path=Tank}"></ComboBox>
+                    <TextBlock Name="descriptionTank" Text="{Binding ElementName=cboTank, Path=SelectedItem.Description}"></TextBlock>
+                    <TextBlock>Epaisseur combinaison</TextBlock>
+                    <TextBox Text="{Binding Path=ThicknessMm,Converter={StaticResource combinaisonMmConverter}}"></TextBox>
+                    <TextBlock Name="descriptionSuit" Text="{Binding Path=Suit.Description}"/>
+                    <TextBlock>Palmes</TextBlock>
+                    <ComboBox Name="cboFins" ItemsSource="{x:Static buoyancy:Fins.Items}" SelectedItem="{Binding Path=Fins}"></ComboBox>
+                    <TextBlock Name="descriptionFins" Text="{Binding ElementName=cboFins, Path=SelectedItem.Description}"></TextBlock>
+                    <TextBlock>Stab</TextBlock>
+                    <ComboBox Name="cboJacket" ItemsSource="{x:Static buoyancy:Jacket.Items}" SelectedItem="{Binding Path=Jacket}"></ComboBox>
+                    <TextBlock Name="descriptionJacket" Text="{Binding ElementName=cboJacket, Path=SelectedItem.Description}"></TextBlock>
+
+                    <TextBlock>Détendeur</TextBlock>
+                    <ComboBox Name="cboBreather" ItemsSource="{x:Static buoyancy:Breather.Items}" SelectedItem="{Binding Path=Breather}"></ComboBox>
+                    <TextBlock Name="descriptionBreather" Text="{Binding ElementName=cboBreather, Path=SelectedItem.Description}"></TextBlock>
+
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

@@ -4,7 +4,7 @@ using RealWorldPlot.Interfaces.GeometryHelpers;
 
 namespace Abo.DiveComputer.Core
 {
-  
+
 
     public sealed class BulhmanCompartment
     {
@@ -21,7 +21,7 @@ namespace Abo.DiveComputer.Core
         private double K;   // ln2/halfperiodMin
         public MValues MValues { get; }
 
-        public BulhmanCompartment(BulhmanCompartments owner,double halfTimeMin, double aBulhmanCoeff, double bBulhmanCoeff)
+        public BulhmanCompartment(BulhmanCompartments owner, double halfTimeMin, double aBulhmanCoeff, double bBulhmanCoeff)
         {
             this.Compartments = owner;
             _halfLife = halfTimeMin;
@@ -33,7 +33,7 @@ namespace Abo.DiveComputer.Core
             K = BulhmanCompartments.ln2 / _halfLife;
 
             this.MValues = new MValues(ABulhmanCoeff, BBulhmanCoeff);
-       
+
             SetComputationParameters(GradientFactorsSettings.Default, DiveProfile);
 
         }
@@ -48,7 +48,7 @@ namespace Abo.DiveComputer.Core
             GradientFactorPoints.Clear();
             _latestElapsedTime = 0;
             PN2Tissue = PinspN2(Pamb(Depth)); // état initial à l’équilibre
-                    }
+        }
         public double BBulhmanCoeff { get; }
 
         public double ABulhmanCoeff { get; }
@@ -110,6 +110,10 @@ namespace Abo.DiveComputer.Core
 
 
             #region reverse test
+
+         //  var result= SchreinerSolver.SolveX(pShreiner, pi0,p0, R, K);
+
+
             //inversion de l'équation de Schreiner pour retrouver deltaT et le temps passé
             double num = pShreiner - pi0;
             double den = p0 - pi0;
@@ -123,8 +127,8 @@ namespace Abo.DiveComputer.Core
             double yy;
             try
             {
-                double reverseTimeMn=InverseTime(pShreiner, pi0, p0, R, _halfLife);
-                double delta=reverseTimeMn- deltaT;
+                double reverseTimeMn = InverseTime(pShreiner, pi0, p0, R, _halfLife);
+                double delta = reverseTimeMn - deltaT;
                 yy = InverseTime(gf, pi0, p0, R, _halfLife);
                 yy = InverseTime(gf, pi0, pShreiner, R, _halfLife);
                 if (delta > 0.5)
@@ -138,7 +142,7 @@ namespace Abo.DiveComputer.Core
                 }
                 else
                 {
-                    
+
                 }
             }
             catch (Exception e)
@@ -151,7 +155,7 @@ namespace Abo.DiveComputer.Core
                 yy = 0;
             }
             #endregion
-            
+
             System.Diagnostics.Debug.WriteLine($"NDL {_halfLife}=> {Depth}m => {yy}");
             double ndl = yy;
 
@@ -214,7 +218,7 @@ namespace Abo.DiveComputer.Core
             }
             else
             {
-                retValue =((double) Compartments.GasSettings.N2Percentage)/100 * (pamb - BulhmanCompartments.PH2O);
+                retValue = ((double)Compartments.GasSettings.N2Percentage) / 100 * (pamb - BulhmanCompartments.PH2O);
             }
 
             return retValue;
@@ -290,7 +294,7 @@ namespace Abo.DiveComputer.Core
 
             return retValue;
         }
-        
+
         public void SetComputationParameters(GradientFactorsSettings gradientFactorsSettings, DiveProfile diveProfile)
         {
             this.DiveProfile = diveProfile;
@@ -320,7 +324,7 @@ namespace Abo.DiveComputer.Core
         public int N2Percentage
         {
             get => 100 - O2Percentage;
-            
+
         }
 
         static GasSettings()
@@ -375,4 +379,84 @@ namespace Abo.DiveComputer.Core
             }
         }
     }
+
+
+
+    public static class SchreinerSolver
+    {
+        // Résout : pShreiner = pi0 + R*(x - 1/K) - (pi0 - p0 - R/K) * exp(-K*x)
+        // Hypothèses : K != 0. Si R == 0, on applique la formule fermée (voir plus bas).
+        public static double SolveX(double pShreiner, double pi0, double p0, double R, double K,
+                                    double tol = 1e-12, int maxIter = 100)
+        {
+            if (K == 0.0)
+                throw new ArgumentException("K ne peut pas être 0 (l’équation comporte 1/K).");
+
+            // Cas particulier R = 0 : solution fermée
+            if (R == 0.0)
+            {
+                // pShreiner = pi0 - (pi0 - p0) * exp(-K*x)
+                // => exp(-K*x) = (pi0 - pShreiner)/(pi0 - p0)
+                double num = pi0 - pShreiner;
+                double den = pi0 - p0;
+                if (den == 0.0)
+                    throw new ArgumentException("pi0 - p0 ne doit pas être 0 quand R=0.");
+                if (num <= 0.0 || den <= 0.0)
+                    throw new ArgumentException("Arguments incohérents pour R=0 (log d’un nombre <= 0).");
+
+                return -Math.Log(num / den) / K;
+            }
+
+            // Définition utile
+            double B = pi0 - p0 - R / K;
+
+            // f(x) = pi0 + R*(x - 1/K) - B*exp(-K*x) - pShreiner
+            // f'(x) = R + K*B*exp(-K*x)
+            double F(double x)
+            {
+                return pi0 + R * (x - 1.0 / K) - B * Math.Exp(-K * x) - pShreiner;
+            }
+
+            double dF(double x)
+            {
+                return R + K * B * Math.Exp(-K * x);
+            }
+
+            // Point de départ (solution en ignorant le terme exp) : A/R
+            // A = pShreiner - pi0 + R/K
+            double A = pShreiner - pi0 + R / K;
+            double x = A / R;
+
+            // Sécurisation : quelques itérations de Newton
+            for (int i = 0; i < maxIter; i++)
+            {
+                double fx = F(x);
+                double dfx = dF(x);
+
+                // Converge ?
+                if (Math.Abs(fx) <= tol)
+                    return x;
+
+                // Dérivée trop petite : petit pas de secours
+                if (Math.Abs(dfx) < 1e-18)
+                {
+                    x += (i % 2 == 0 ? 1 : -1) * 1e-6; // perturbe légèrement
+                    continue;
+                }
+
+                double step = fx / dfx;
+                double xNext = x - step;
+
+                // Si on fait un très petit pas, on estime convergé
+                if (Math.Abs(xNext - x) <= Math.Max(1.0, Math.Abs(x)) * tol)
+                    return xNext;
+
+                x = xNext;
+            }
+
+            // Si on arrive ici, pas de convergence dans maxIter
+            throw new Exception("La méthode de Newton n’a pas convergé. Essayez un autre point de départ ou vérifiez les paramètres.");
+        }
+    }
+
 }

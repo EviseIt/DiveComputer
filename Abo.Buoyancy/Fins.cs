@@ -14,8 +14,23 @@ public partial class Fins : IImmersible
         MaresAvantiQuattroPlus = new Fins("Mares Avanti Quattro +", 2.2m, 4m);
         ScubaproSeawingNova = new Fins("Scubapro Seawing Nova", 2, 3.5m);
         AqualungStratos3 = new Fins("Aqualung Stratos 3", 1.8m, 3.2m);
+        Items= [
+            MaresAvantiQuattroPlus,
+            ScubaproSeawingNova,
+            AqualungStratos3
+        ];
     }
 
+    public override string ToString()
+    {
+        return Name;
+    }
+
+    public string Description
+    {
+        get => $"{Name} {VolumeDm3}L ({WeightKg}kg)";
+    }
+    public static Fins[] Items { get; }
     public static Fins AqualungStratos3 { get;  }
 
     public static Fins ScubaproSeawingNova { get;  }

@@ -22,7 +22,22 @@ namespace Abo.Buoyancy
             TwelveLiters = new Tank(12, 16.9m, 14.5m);
             FifteenLiters = new Tank(15, 23.2m, 17.5m);
             EighteenLiters = new Tank(18, 25.9m, 19.5m);
+            Items = [TwelveLiters,
+                FifteenLiters,
+                EighteenLiters
+            ];
         }
+
+        public override string ToString()
+        {
+            return $"{VolumeL} l";
+        }
+
+        public string Description
+        {
+            get=>$"Acier : {VolumeL}L ({WeightKg}kg)";
+        }
+        public static Tank[] Items { get;  }
 
         public static Tank EighteenLiters { get;  }
 

@@ -4,7 +4,7 @@ namespace Abo.Buoyancy
 {
     public partial class Person:IImmersible
     {
-        public Gender Gender { get; set; } = Gender.Female; // "H" ou "F"
+        public Gender Gender { get; set; } = Gender.Femme; // "H" ou "F"
       
         public Person(Gender sexe, decimal tailleCm, decimal poidsKg, int age)
         {
@@ -22,7 +22,7 @@ namespace Abo.Buoyancy
         {
             get
             {
-                int S = (Gender==Gender.Male) ? 1 : 0;
+                int S = (Gender==Gender.Homme) ? 1 : 0;
                 return 1.20m * IMC + 0.23m * Age - 10.8m * S - 5.4m;
             }
         }
