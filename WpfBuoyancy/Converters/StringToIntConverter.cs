@@ -4,6 +4,19 @@ using System.Windows.Data;
 
 namespace WpfBuoyancy
 {
+    public class DebugConverter:IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+           // System.Diagnostics.Debugger.Break();
+            return value;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            System.Diagnostics.Debugger.Break();
+            return value;
+        }
+    }
     public class StringToIntConverter : IValueConverter
     {
         public int Min { get; set; } = int.MinValue;

@@ -1,0 +1,85 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using Abo.Buoyancy;
+using System.Windows;
+
+namespace WpfBuoyancy.ViewModels;
+
+public partial class DiverViewModel : ViewModelBase
+{
+   <#
+	Tuple<string,int,decimal,int,int>[]  arrows=new []
+	{
+		new Tuple<string,int,decimal,int,int>("Person",20,2m,300,40),
+		new Tuple<string,int,decimal,int,int>("Fins",40,5m,200,0),
+		new Tuple<string,int,decimal,int,int>("Breather",60,5m,200,0),
+		new Tuple<string,int,decimal,int,int>("Jacket",80,3m,200,0),
+		new Tuple<string,int,decimal,int,int>("Suit",100,2m,200,0),
+		new Tuple<string,int,decimal,int,int>("Tank",120,2m,200,0),
+		new Tuple<string,int,decimal,int,int>("LeadWeight",140,10m,200,0)
+	};
+
+	foreach(var item in arrows) 
+	{#>
+		private const decimal  <#=item.Item1#>GraphFactor=<#=item.Item3#>m;
+	<#}
+
+	foreach(var item in arrows) 
+	{#>
+		public LiftArrow <#=item.Item1#>LiftArrow
+		{
+			get;
+		} = new LiftArrow();
+
+		public WeightArrow <#=item.Item1#>WeightArrow
+		{
+			get;
+		} = new WeightArrow();	
+	<#}#>
+	partial void _updateArrows(Size renderSize)
+	{
+	<#foreach(var item in arrows) {#>
+
+		
+			<#=item.Item1#>WeightArrow.SetY(renderSize.Height / 2);
+            <#=item.Item1#>LiftArrow.SetY(renderSize.Height / 2);
+			_updateArrow(<#=item.Item1#>, this.<#=item.Item1#>WeightArrow, this.<#=item.Item1#>LiftArrow);
+	<#}#>
+	}
+	partial void _setupArrows()
+	{
+		<#foreach(var item in arrows) {#>
+
+			<#=item.Item1#>LiftArrow.StartPoint = new Point(<#=item.Item2#>, 200);
+			<#=item.Item1#>WeightArrow.StartPoint = new Point(<#=item.Item2#>, 200);
+
+			<#=item.Item1#>LiftArrow.EndPoint = new Point(<#=item.Item2#>, 100);
+			<#=item.Item1#>WeightArrow.EndPoint = new Point(<#=item.Item2#>, 300);
+
+
+		<#}#>
+	}
+	partial void _setArrows()
+	{
+		
+		Arrows=new Arrow[] { 
+		<#foreach(var item in arrows) {#>
+		<#=item.Item1#>LiftArrow, <#=item.Item1#>WeightArrow,
+		<#}#>
+		};	
+		
+	}
+
+	   partial void _setupArrowsAdjustement()
+	   {
+		  <#foreach(var item in arrows) {#>
+			 _graphAdjustements.Add(<#=item.Item1#>LiftArrow,<#=item.Item3#>m,<#=item.Item4#>,<#=item.Item5#>);
+			 _graphAdjustements.Add(<#=item.Item1#>WeightArrow,<#=item.Item3#>m,<#=item.Item4#>,<#=item.Item5#>);
+		  <#}#>
+	   }
+}

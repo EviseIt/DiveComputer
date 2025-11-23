@@ -122,6 +122,8 @@ namespace Abo.DiveComputer.WPF
             _compartments.ComputeDiveProfile(diveProfile);
             _setPointsHelper.SetPoints();
             NDL.SetPoints(this._compartments.Ndl,new PenInfo(Color.FromRgb(0,0,255),1));
+            NDL.YMax = 99;
+            NDL.YMin = 0;
 
 
             All.XMin = 0;

@@ -11,12 +11,10 @@ namespace Abo.DiveComputer.Core
         public double MaxN2Tension { get; private set; }
         public BulhmanCompartment Compartment { get; private set; }
 
-        static DirectorCompartment()
+        public static DirectorCompartment None
         {
-            None = new DirectorCompartment();
+            get => new DirectorCompartment();
         }
-
-        public static DirectorCompartment None { get; }
 
         public void ComputeDirector(BulhmanCompartment compartment, double n2Tension,double ndl)
         {
@@ -26,9 +24,10 @@ namespace Abo.DiveComputer.Core
                 Compartment = compartment;
             }
 
-            if (ndl < this.Ndl)
+            if (ndl < this.Ndl && ndl>=0)
             {
                 this.Ndl = ndl;
+                System.Diagnostics.Debug.WriteLine("####"+ndl);
             }
 
             

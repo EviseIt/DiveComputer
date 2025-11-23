@@ -1,0 +1,78 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using Abo.Buoyancy;
+using System.Windows;
+
+
+
+namespace WpfBuoyancy.ViewModels;
+
+public partial class DiverViewModel : ViewModelBase
+{
+   <#
+	string[]  arrows=new []
+	{
+		"Person",
+		"Fins",
+		"Breather",
+		"Jacket",
+		"Suit",
+		"Tank",
+		"LeadWeight"
+	};
+
+	foreach(var item in arrows) 
+	{#>
+		 private decimal _personWeightArrowLength;
+		public decimal PersonWeightArrowLength
+		{
+			get => _personWeightArrowLength;
+			set => SetProperty(ref _personWeightArrowLength, value);
+		}
+
+	<#}
+
+	foreach(var item in arrows) 
+	{#>
+			private decimal _<#=ToCamlCase(item)#>ArrowLength;
+		public decimal <#=item#>WeightArrowLength
+		{
+			get;
+		} ;
+
+		public WeightArrow <#=item#>WeightArrow
+		{
+			get;
+		} = new WeightArrow();	
+	<#}#>
+	<#+
+
+public static string? ToCamlCase(string value)
+        {
+
+            string retValue = null;
+            if (value != null)
+            {
+                StringBuilder builder = new StringBuilder();
+                value = value.Trim();
+
+                if (value.Length == 1)
+                {
+                    builder.Append(value.ToLower());
+                }
+                else
+                {
+                    builder.Append(value.Substring(0, 1).ToLower());
+                    builder.Append(value.Substring(1));
+                }
+                retValue = builder.ToString();
+            }
+
+            return retValue;
+        }
+#>

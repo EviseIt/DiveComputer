@@ -6,47 +6,108 @@
         xmlns:local="clr-namespace:WpfBuoyancy"
         xmlns:viewModels="clr-namespace:WpfBuoyancy.ViewModels"
         xmlns:buoyancy="clr-namespace:Abo.Buoyancy;assembly=Abo.Buoyancy"
+        xmlns:controls="clr-namespace:WpfBuoyancy.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" x:Name="Root">
     <Window.Resources>
         <local:ArrowGeometryConverter x:Key="ArrowGeometryConverter"/>
         <local:StringToIntConverter x:Key="ageConverter" Min="10" Max="120"></local:StringToIntConverter>
         <local:StringToIntConverter x:Key="sizeCmConverter" Min="100" Max="240"></local:StringToIntConverter>
         <local:StringToIntConverter x:Key="weightKgConverter" Min="1" Max="200"></local:StringToIntConverter>
         <local:StringToIntConverter x:Key="combinaisonMmConverter" Min="1" Max="20"></local:StringToIntConverter>
+        <local:StringToIntConverter x:Key="depthMConverter" Min="0" Max="60"></local:StringToIntConverter>
+        <local:StringToIntConverter x:Key="tankBarConverter" Min="1" Max="300"></local:StringToIntConverter>
+        <local:StringToIntConverter x:Key="liftVolumeConverterDm3" Min="0" Max="30"></local:StringToIntConverter>
+        <local:DebugConverter x:Key="debugConverter"></local:DebugConverter>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ItemsControl Name="arrowPanel">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas Background="#F7F7F7"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="48"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border Padding="4" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type viewModels:Arrow}">
-                    <Path Stroke="{Binding Stroke}"
-                          StrokeThickness="{Binding Thickness}"
-                          StrokeStartLineCap="Round"
-                          StrokeEndLineCap="Round">
-                        <Path.Data>
-                            <MultiBinding Mode="TwoWay" Converter="{StaticResource ArrowGeometryConverter}">
-                                <Binding Path="Start.X"/>
-                                <Binding Path="Start.Y"/>
-                                <Binding Path="End.X"/>
-                                <Binding Path="End.Y"/>
-                                <Binding Path="HeadLength"/>
-                                <Binding Path="HeadAngle"/>
-                            </MultiBinding>
-                        </Path.Data>
-                    </Path>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                <TextBlock Grid.Column="0" >Profondeur:</TextBlock>
+                <TextBox Grid.Column="1" Text="{Binding Path =DepthM,Converter={StaticResource depthMConverter}}"></TextBox>
+                <TextBlock Grid.Column="2">Pression:</TextBlock>
+                <TextBox Grid.Column="3" Text="{Binding Path=TankPressure,Converter={StaticResource tankBarConverter}}"></TextBox>
+                <TextBlock Grid.Column="4">Stab:</TextBlock>
+                <ScrollBar Grid.Column="5" Orientation="Horizontal" Minimum="0" Maximum="10" Value="{Binding LiftVolumeDm3,Converter={StaticResource liftVolumeConverterDm3}}"></ScrollBar>
+                <CheckBox Grid.Column="6" IsChecked="{Binding UseProportionalGraphFactor}">Proportionnel</CheckBox>
+            </Grid>
+        </Border>
+        <controls:ArrowImageOverlay
+            Image="{Binding MyBitmap}"
+            ImageWidth="400" ImageHeight="250"
+            ArrowBrush="White"          
+            StrokeThickness="2"
+            ArrowHeadSize="10"  x:Name="arrowImageOverlay">
+
+            <controls:ArrowImageOverlay.Arrows>
+                <!-- green pair at 70%,60%, length 40 -->
+                <controls:ArrowSpec  DownLength="{Binding PersonWeightArrowLength,Converter={StaticResource debugConverter}}" UpLength="20" HookPoint="0.70,0.60" HookIsNormalized="True"
+                                 UpBrush="Lime" DownBrush="DeepSkyBlue"/>
+
+                <!-- Pair-wide Brush is Orange, only override Down to Magenta -->
+                <controls:ArrowSpec DownLength="90" UpLength="30" HookPoint="0.30,0.30" HookIsNormalized="True"
+                                 UpBrush="Orange" DownBrush="#FF00FF" StrokeThickness="3"/>
+
+                <!-- No Up/Down specified -> both use Brush (HotPink) -->
+                <controls:ArrowSpec DownLength="140" UpLength="40" HookPoint="0.10,0.80" HookIsNormalized="True"
+                                 UpBrush="HotPink" DownBrush="Red" ArrowHeadSize="12"/>
+            </controls:ArrowImageOverlay.Arrows>
+        </controls:ArrowImageOverlay>
+        <!--<Grid Grid.Row="0" Grid.Column="0">
+            <Canvas x:Name="Stage"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="BlueViolet">
+
+            </Canvas>
+
+
+            --><!-- Optional overlay for arrows --><!--
+            <ItemsControl Name="arrowPanel">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Background="Transparent" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:Arrow}">
+                        <Path Stroke="{Binding Stroke}"
+                              StrokeThickness="{Binding Thickness}"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round">
+                            <Path.Data>
+                                <MultiBinding Mode="TwoWay" Converter="{StaticResource ArrowGeometryConverter}">
+                                    <Binding Path="Start.X"/>
+                                    <Binding Path="Start.Y"/>
+                                    <Binding Path="End.X"/>
+                                    <Binding Path="End.Y"/>
+                                    <Binding Path="HeadLength"/>
+                                    <Binding Path="HeadAngle"/>
+                                </MultiBinding>
+                            </Path.Data>
+                        </Path>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>-->
+
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*"></RowDefinition>
@@ -55,6 +116,8 @@
             <Border Padding="4">
                 <StackPanel >
                     <TextBlock>Age</TextBlock>
+                    <ComboBox Name="cboWater" ItemsSource="{x:Static buoyancy:Water.Items}" SelectedItem="{Binding Path=Water}"></ComboBox>
+                    <TextBlock>Age</TextBlock>
                     <TextBox Text="{Binding Path=Age,Converter={StaticResource ageConverter}}"></TextBox>
                     <TextBlock>Taille</TextBlock>
                     <TextBox Text="{Binding Path=SizeCm,Converter={StaticResource sizeCmConverter}}"></TextBox>
@@ -62,7 +125,6 @@
                     <TextBox Text="{Binding Path=WeightKg,Converter={StaticResource weightKgConverter}}"></TextBox>
                     <TextBlock>Sexe</TextBlock>
                     <ComboBox Name="cboGender" ItemsSource="{x:Static buoyancy:Gender.Items}" SelectedItem="{Binding Path=Gender}"></ComboBox>
-
                     <Border Height="10" Background="Bisque" Margin="0,4,0,4"></Border>
                     <TextBlock>Bloc</TextBlock>
                     <ComboBox Name="cboTank" ItemsSource="{x:Static buoyancy:Tank.Items}" SelectedItem="{Binding Path=Tank}"></ComboBox>
@@ -76,11 +138,11 @@
                     <TextBlock>Stab</TextBlock>
                     <ComboBox Name="cboJacket" ItemsSource="{x:Static buoyancy:Jacket.Items}" SelectedItem="{Binding Path=Jacket}"></ComboBox>
                     <TextBlock Name="descriptionJacket" Text="{Binding ElementName=cboJacket, Path=SelectedItem.Description}"></TextBlock>
-
                     <TextBlock>Détendeur</TextBlock>
                     <ComboBox Name="cboBreather" ItemsSource="{x:Static buoyancy:Breather.Items}" SelectedItem="{Binding Path=Breather}"></ComboBox>
                     <TextBlock Name="descriptionBreather" Text="{Binding ElementName=cboBreather, Path=SelectedItem.Description}"></TextBlock>
-
+                    <TextBlock>Leste</TextBlock>
+                    <TextBox Text="{Binding Path=LeadWeightKg,Converter={StaticResource weightKgConverter}}"></TextBox>
                 </StackPanel>
             </Border>
         </Grid>

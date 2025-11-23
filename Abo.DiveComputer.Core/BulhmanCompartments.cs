@@ -109,7 +109,7 @@ public class BulhmanCompartments : IEnumerable<BulhmanCompartment>
         var compartments = _compartments;
         //if (DEBUG)
         //{
-        //    compartments = new Compartment[] { _compartments[0] };
+        //    compartments = new BulhmanCompartment[] { _compartments[0] };
         //}
 
         foreach (var compartment in compartments)

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Meta.Numerics.Functions;
 using RealWorldPlot.Interfaces;
 using RealWorldPlot.Interfaces.GeometryHelpers;
@@ -94,9 +95,19 @@ namespace Abo.DiveComputer.Core
             }
 
             double deltaT = elapsedTimeInSecondsStep / 60.0;
+            //pi0=pression initiale du gaz inerte respiré (alvéolaire) moins la vapeur d’eau
             double pi0 = PinspN2(Pamb(Depth));       // début de segment
             double piEnd = PinspN2(Pamb(profondeur));  // fin de segment
+
+
+            //variation de la pression du gaz respiré en fonction de la variation de la pression ambiante
+            //c’est simplement le taux de descente ou remontée multiplié par le pourcentage de gaz inerte
             double R = (piEnd - pi0) / deltaT;           // bar/min (variation linéaire de Pi)
+
+            R = (profondeur - Depth) / (deltaT * 10);
+
+
+            //pression du gaz inerte présente au départ dans le compartiment
             double p0 = PN2Tissue;
 
             // Équation de Schreiner (variation linéaire)
@@ -105,66 +116,31 @@ namespace Abo.DiveComputer.Core
 
             double pShreiner = pi0 + R * (deltaT - 1.0 / K) - (pi0 - p0 - R / K) * Math.Exp(-kt);
             double pHaldane = pi0 + (p0 - pi0) * Math.Exp(-kt);
+
             //Si R=0, on retrouve l'équation de Haldane
             //double p=Pi0-(Pi0-P0)exp(-kt):
 
-
             #region reverse test
-
-         //  var result= SchreinerSolver.SolveX(pShreiner, pi0,p0, R, K);
-
-
-            //inversion de l'équation de Schreiner pour retrouver deltaT et le temps passé
-            double num = pShreiner - pi0;
-            double den = p0 - pi0;
-
-
-            var reverseT = -Math.Log(num / den) / K;
-            double reverseTT = reverseT * 60 + _latestElapsedTime;
-
-            //  double xx= InverseTime(P, Pi0, P0, R, _halfLife);
+            //Pour calculer la NDL, R=0, on utilise donc l'équation de Haldane
+            //En calculant T tel que Pshreiner=PN2Tissue sur la droite affine à profondeur constante
             double gf = GradientFactorLines.AffineLine.GetY(Pamb(Depth)).Y;
-            double yy;
-            try
-            {
-                double reverseTimeMn = InverseTime(pShreiner, pi0, p0, R, _halfLife);
-                double delta = reverseTimeMn - deltaT;
-                yy = InverseTime(gf, pi0, p0, R, _halfLife);
-                yy = InverseTime(gf, pi0, pShreiner, R, _halfLife);
-                if (delta > 0.5)
-                {
+            //donc on inverse avec po=pSchreiner piO=piEnd et pShreiner=gf
+            //soit:
+            double ndl=Math.Log((gf-piEnd)/(pShreiner-piEnd))/-K;
 
-                }
 
-                if (yy == double.NaN)
-                {
-                    yy = 99;
-                }
-                else
-                {
-
-                }
-            }
-            catch (Exception e)
-            {
-                yy = 99;
-            }
-
-            if (yy < 0)
-            {
-                yy = 0;
-            }
+        
             #endregion
 
-            System.Diagnostics.Debug.WriteLine($"NDL {_halfLife}=> {Depth}m => {yy}");
-            double ndl = yy;
+            if (_halfLife == 18.5)
+            {
+                System.Diagnostics.Debug.WriteLine($"NDL {_halfLife}=> {Depth}/{profondeur}m => {ndl}");
+            }
 
             PN2Tissue = pShreiner;
             Depth = profondeur;
             _latestElapsedTime = elapsedTimeInSeconds;
 
-            var elapsed = DateTime.Now - start;
-            //==> System.Diagnostics.Debug.WriteLine($"MoveTo: {elapsed.TotalMilliseconds} for {_halfLife}");
 
             if (ndl > 0)
             {

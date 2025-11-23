@@ -9,7 +9,59 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ViewModels\DiverViewModel - Copy.Arrows.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Images\scuba-diver.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="bin\Debug\net9.0-windows\scuba-diver.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\scuba-diver.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ViewModels\DiverViewModel.NewArrows.cs">
+      <DependentUpon>DiverViewModel.NewArrows.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Abo.Buoyancy\Abo.Buoyancy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ViewModels\DiverViewModel.ArrowSpecs.tt.old">
+      <LastGenOutput>DiverViewModel.ArrowSpecs.tt.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="ViewModels\DiverViewModel.NewArrows.tt">
+      <LastGenOutput>DiverViewModel.NewArrows.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="ViewModels\DiverViewModel.Arrows.tt.old">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DiverViewModel.Arrows.tt.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ViewModels\DiverViewModel.NewArrows.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DiverViewModel.NewArrows.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
